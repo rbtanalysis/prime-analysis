@@ -1,0 +1,24 @@
+.chart-series-line {
+    -fx-stroke: darkblue;
+    -fx-stroke-width: 0.75;
+}
+
+.chart-symbol {
+    -fx-background-color: darkblue;
+    -fx-padding: 2.5;
+}
+
+.chart-bar {
+    -fx-bar-fill: darkblue;
+}
+
+.chart-plot-background {
+    -fx-background-color: white;
+}
+.chart-vertical-grid-lines {
+    -fx-stroke: gainsboro;
+}
+.chart-horizontal-grid-lines {
+    -fx-stroke: gainsboro;
+}
+
