@@ -27,15 +27,14 @@ public class PrimePartition implements Serializable, Comparable {
 
     public BigDecimal getCount() {
                 
-        if (app.getConfig().isUseLog()) {
+        if (app.getConfig().isUseLogForCounts()) {
             return app.getUtil().toBigDecimal(Math.log(count.doubleValue()));
         } else {
             return count;
         }
     }
 
- 
-    public String toString() {
+     public String toString() {
         StringBuilder retval = new StringBuilder();
         retval.append(radian);
         retval.append(",");
@@ -99,7 +98,11 @@ public class PrimePartition implements Serializable, Comparable {
     }
 
     public BigDecimal getOriginalTorusArea() {
-        return originalTorusArea;
+        if (app.getConfig().isUseLogForArea()) {
+            return app.getUtil().toBigDecimal(Math.log(originalTorusArea.doubleValue()));
+        } else {
+            return originalTorusArea;
+        }
     }
 
     public void setOriginalTorusArea(BigDecimal originalTorusArea) {

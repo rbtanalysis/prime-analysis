@@ -47,10 +47,16 @@ public class ConfigurationTab extends Tab {
             cnt++;
         }
 
-        vbox.getChildren().add(getCheckBoxPane("useLog", "Apply ln(count) for counts", newConfig.isUseLog(), DEFAULT_LABEL_WIDTH));
+        vbox.getChildren().add(getCheckBoxPane("useLogForCounts", "Apply ln(count) for counts", newConfig.isUseLogForCounts(), DEFAULT_LABEL_WIDTH));
         vbox.setPadding(new Insets(20, 20, 20, 20));
         vbox.setAlignment(Pos.BASELINE_RIGHT);
         vbox.setSpacing(5.0);
+
+        vbox.getChildren().add(getCheckBoxPane("useLogForArea", "Apply ln(area) for area", newConfig.isUseLogForArea(), DEFAULT_LABEL_WIDTH));
+        vbox.setPadding(new Insets(20, 20, 20, 20));
+        vbox.setAlignment(Pos.BASELINE_RIGHT);
+        vbox.setSpacing(5.0);
+
         FlowPane fp = new FlowPane();
         fp.setAlignment(Pos.CENTER);
 
@@ -73,8 +79,12 @@ public class ConfigurationTab extends Tab {
                 indx++;
             }
 
-            CheckBox cb = (CheckBox) entryFieldMap.get("useLog");
-            newConfig.setUseLog(cb.isSelected());
+            CheckBox cb = (CheckBox) entryFieldMap.get("useLogForCounts");
+            newConfig.setUseLogForCounts(cb.isSelected());
+
+            cb = (CheckBox) entryFieldMap.get("useLogForArea");
+            newConfig.setUseLogForArea(cb.isSelected());
+
 
             app.load(newConfig, "Applying configuration updates...");
         });
@@ -94,7 +104,8 @@ public class ConfigurationTab extends Tab {
                         cnt++;
                     }
 
-                    ((CheckBox) entryFieldMap.get("useLog")).setSelected(config.isUseLog());
+                    ((CheckBox) entryFieldMap.get("useLogForCounts")).setSelected(config.isUseLogForCounts());
+                    ((CheckBox) entryFieldMap.get("useLogForArea")).setSelected(config.isUseLogForArea());
                 }
             }
         });

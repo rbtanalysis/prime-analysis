@@ -15,7 +15,8 @@ public class Config {
     private Integer chartHeight = Constants.DEFAULT_CHART_HEIGHT;
     private Integer primeFileLoadCount = Constants.DEFAULT_PRIME_FILE_LOAD_CNT;
     private BigDecimalScale bigDecimalScale = Constants.DEFAULT_BD_SCALE;
-    private Boolean useLog = Boolean.FALSE;
+    private Boolean useLogForCounts = Boolean.FALSE;
+    private Boolean useLogForArea = Boolean.FALSE;
 
     public String getPrimeFilesDir() {
         return primeFilesDir;
@@ -76,19 +77,14 @@ public class Config {
         retval.setBigDecimalScale(bigDecimalScale);
         retval.setPrimeFileLoadCount(primeFileLoadCount);
         retval.setRanges(getRanges());
-        retval.setUseLog(useLog);
+        retval.setUseLogForCounts(useLogForCounts);
+        retval.setUseLogForArea(useLogForArea);
 
         return retval;
     }
 
-    public Boolean isUseLog() {
-        return useLog;
-    }
 
-    public void setUseLog(Boolean useLog) {
-        this.useLog = useLog;
-    }
-
+    /*
 
     public void update(Config in) {
         this.primeFileLoadCount = in.getPrimeFileLoadCount();
@@ -96,6 +92,7 @@ public class Config {
         this.useLog = in.isUseLog();
         this.setRanges(in.getRanges());
     }
+*/
 
     public BigDecimalScale getBigDecimalScale() {
         return bigDecimalScale;
@@ -103,6 +100,22 @@ public class Config {
 
     public void setBigDecimalScale(BigDecimalScale bigDecimalScale) {
         this.bigDecimalScale = bigDecimalScale;
+    }
+
+    public Boolean isUseLogForCounts() {
+        return useLogForCounts;
+    }
+
+    public void setUseLogForCounts(Boolean useLogForCounts) {
+        this.useLogForCounts = useLogForCounts;
+    }
+
+    public Boolean isUseLogForArea() {
+        return useLogForArea;
+    }
+
+    public void setUseLogForArea(Boolean useLogForArea) {
+        this.useLogForArea = useLogForArea;
     }
 
 }

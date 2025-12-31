@@ -94,19 +94,18 @@ public class PrimeAnalysis extends Application {
 
         stage.setScene(getChartScene(new Message(message)));
         stage.show();
-
+  
         if (mainTabs == null) {
             mainTabs = new TabPane();
             mainTabs.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 //            stage.setScene(getChartScene(new BorderPane(mainTabs)));
         }
-        
+
+        if (primes == null) {
+            primes = loadPrimes();
+        }
 
         Platform.runLater(() -> {
-            if (primes == null) {
-                primes = loadPrimes();
-            }
-
             Map<BigDecimal, PrimePartition> partitionMap = getPartitions(primes);
 
             List<Tab> tabs = mainTabs.getTabs();
@@ -143,11 +142,18 @@ public class PrimeAnalysis extends Application {
                         List<PrimePartition> partitions = new ArrayList(partitionMap.values());
                         Collections.sort(partitions);
                         List<String> l = new ArrayList();
-                        if (config.isUseLog()) {
-                        l.add(PrimePartition.CSV_HEADER.replace("Count", "ln(Count)"));
+                        if (config.isUseLogForCounts()) {
+                            l.add(PrimePartition.CSV_HEADER.replace("Count", "ln(Count)"));
                         } else {
                             l.add(PrimePartition.CSV_HEADER);
                         }
+                        
+                        if (config.isUseLogForArea()) {
+                            l.add(PrimePartition.CSV_HEADER.replace("Area", "ln(Area)"));
+                        } else {
+                            l.add(PrimePartition.CSV_HEADER);
+                        }
+
 
                         for (PrimePartition pp : partitions) {
                             l.add(pp.toString());
@@ -163,7 +169,6 @@ public class PrimeAnalysis extends Application {
             mainTabs.getSelectionModel().selectFirst();
 
             stage.setScene(getChartScene(new BorderPane(mainTabs)));
-
 
         });
 
@@ -182,16 +187,24 @@ public class PrimeAnalysis extends Application {
         TableColumn<PrimePartition, BigDecimal> radianCol = new TableColumn("Adjusted Radian");
         TableColumn<PrimePartition, BigDecimal> degreeCol = new TableColumn("Degrees");
         TableColumn<PrimePartition, BigDecimal> prevCol = new TableColumn("Previous Radian");
-        TableColumn<PrimePartition, BigDecimal> areaCol = new TableColumn("Area");
+        
+        TableColumn<PrimePartition, BigDecimal> areaCol = null;
+        
+          if (config.isUseLogForCounts()) {
+            areaCol = new TableColumn("ln(Area)");
+        } else {
+            areaCol = new TableColumn("Area");
+        }
+        
         TableColumn<PrimePartition, BigDecimal> fullRadianCol = new TableColumn("Full Radian");
         TableColumn<PrimePartition, BigDecimal> radianDecCol = new TableColumn("Radian Decrease");
-        
+
         TableColumn<PrimePartition, BigDecimal> countCol = null;
-        if (config.isUseLog()) {
-            countCol = new TableColumn("ln(Prime Count)");
+        if (config.isUseLogForCounts()) {
+            countCol = new TableColumn("ln(Count)");
         } else {
-            countCol = new TableColumn("Prime Count");
-         }
+            countCol = new TableColumn("Count");
+        }
 
         retval.getColumns().addAll(indexCol, radianCol, degreeCol, prevCol, areaCol, fullRadianCol, radianDecCol, countCol);
 
@@ -202,7 +215,7 @@ public class PrimeAnalysis extends Application {
         areaCol.setCellValueFactory(new PropertyValueFactory<>("originalTorusArea"));
         fullRadianCol.setCellValueFactory(new PropertyValueFactory<>("fullRadian"));
         radianDecCol.setCellValueFactory(new PropertyValueFactory<>("radianDecrease"));
-        
+
         countCol.setCellValueFactory(new PropertyValueFactory<>("count"));
 
         List<PrimePartition> partitions = new ArrayList(partitionMap.values());
@@ -218,13 +231,21 @@ public class PrimeAnalysis extends Application {
     }
 
     private String getCountLabel() {
-        if (config.isUseLog()) {
+        if (config.isUseLogForCounts()) {
             return "ln(count)";
         } else {
             return "count";
         }
     }
-    
+
+    private String getAreaLabel() {
+        if (config.isUseLogForArea()) {
+            return "ln(area)";
+        } else {
+            return "count";
+        }
+    }
+
     private TabPane getTabPane(Side side) {
         TabPane retval = new TabPane();
         retval.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
@@ -276,7 +297,7 @@ public class PrimeAnalysis extends Application {
         //      yAxis.setAutoRanging(false);
 
         XYChart<Number, Number> retval = new ScatterChart<Number, Number>(xAxis, yAxis);
-        retval.setPrefWidth(config.getChartWidth() - (0.05 * config.getChartWidth()));
+        retval.setPrefWidth(config.getChartWidth() - (Constants.DEFAULT_CHART_WIDTH_REDUCTION * config.getChartWidth()));
 
         retval.setTitle(title);
         XYChart.Series series = getSeries();
@@ -468,7 +489,7 @@ public class PrimeAnalysis extends Application {
         yAxis.setAutoRanging(false);
 
         XYChart retval = new BarChart(xAxis, yAxis);
-        retval.setPrefWidth(config.getChartWidth() - (0.05 * config.getChartWidth()));
+        retval.setPrefWidth(config.getChartWidth() - (Constants.DEFAULT_CHART_WIDTH_REDUCTION * config.getChartWidth()));
 
         retval.setTitle(title);
         XYChart.Series<String, Number> series = getSeries("");
