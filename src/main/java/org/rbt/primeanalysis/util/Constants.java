@@ -4,8 +4,6 @@
  */
 package org.rbt.primeanalysis.util;
 
-import org.rbt.primeanalysis.util.BigDecimalScale;
-
 /**
  *
  * @author rbtuc
@@ -13,7 +11,7 @@ import org.rbt.primeanalysis.util.BigDecimalScale;
 public class Constants {
 
     // prime text file location
-    public static final String DEFAULT_PRIME_FILES_DIR = "/dev/projects/primeanalysis/src/main/primefiles/";
+    public static final String DEFAULT_PRIME_FILES_DIR = "/dev/projects/prime-analysis/src/main/primefiles/";
 
     // javafx chart annotation css
     public static final String DEFAULT_CHART_ANNOTATION_CSS = "-fx-border-color: transparent; "
