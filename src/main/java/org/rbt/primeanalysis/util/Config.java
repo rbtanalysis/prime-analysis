@@ -1,7 +1,9 @@
 package org.rbt.primeanalysis.util;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -17,6 +19,7 @@ public class Config {
     private BigDecimalScale bigDecimalScale = Constants.DEFAULT_BD_SCALE;
     private Boolean useLogForCounts = Boolean.FALSE;
     private Boolean useLogForArea = Boolean.FALSE;
+    private Set<Integer> selectedGaps = new HashSet();
 
     public String getPrimeFilesDir() {
         return primeFilesDir;
@@ -79,6 +82,7 @@ public class Config {
         retval.setRanges(getRanges());
         retval.setUseLogForCounts(useLogForCounts);
         retval.setUseLogForArea(useLogForArea);
+        retval.setSelectedGaps(selectedGaps);
 
          return retval;
     }
@@ -107,4 +111,14 @@ public class Config {
         this.useLogForArea = useLogForArea;
     }
 
+    public Set<Integer> getSelectedGaps() {
+        return selectedGaps;
+    }
+
+    public void setSelectedGaps(Set <Integer> selectedGaps) {
+        this.selectedGaps = selectedGaps;
+    }
+
+    
+    
 }

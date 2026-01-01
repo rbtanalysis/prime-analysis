@@ -1,16 +1,20 @@
 package org.rbt.primeanalysis;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.UnaryOperator;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
@@ -31,16 +35,19 @@ public class ConfigurationTab extends Tab {
     private static final Double DEFAULT_LABEL_WIDTH = 150.0;
     private final Config newConfig;
     private Map<String, Control> entryFieldMap = new HashMap();
-    
+    private PrimeAnalysis app = null;
+    private VBox gaps = null;
+
     public ConfigurationTab(PrimeAnalysis app) {
         super("Configuration");
+        this.app = app;
         newConfig = app.getConfig().clone();
 
         VBox vbox = new VBox();
 
         vbox.getChildren().add(getEntryPane("primeFileCount", "Prime File Count:", newConfig.getPrimeFileLoadCount(), DEFAULT_LABEL_WIDTH));
         vbox.getChildren().add(getEntryPane("bigDecimalScale", "Big Decimal Scale:", newConfig.getBigDecimalScale().getScale(), DEFAULT_LABEL_WIDTH));
-      
+
         int cnt = 1;
         for (MinMaxHolder mm : newConfig.getRanges()) {
             vbox.getChildren().add(getEntryPane(mm, cnt));
@@ -56,9 +63,6 @@ public class ConfigurationTab extends Tab {
         vbox.setPadding(new Insets(20, 20, 20, 20));
         vbox.setAlignment(Pos.BASELINE_RIGHT);
         vbox.setSpacing(5.0);
-
-        FlowPane fp = new FlowPane();
-        fp.setAlignment(Pos.CENTER);
 
         Button b = new Button("Set Configuration and Reload");
 
@@ -85,6 +89,16 @@ public class ConfigurationTab extends Tab {
             cb = (CheckBox) entryFieldMap.get("useLogForArea");
             newConfig.setUseLogForArea(cb.isSelected());
 
+            Set<Integer> selectedGaps = new HashSet();
+
+            for (Node node : gaps.getChildren()) {
+                cb = (CheckBox) node;
+                if (cb.isSelected()) {
+                    selectedGaps.add(Integer.valueOf(cb.getText()));
+                }
+            }
+
+            newConfig.setSelectedGaps(selectedGaps);
 
             app.load(newConfig, "Applying configuration updates...");
         });
@@ -106,13 +120,57 @@ public class ConfigurationTab extends Tab {
 
                     ((CheckBox) entryFieldMap.get("useLogForCounts")).setSelected(config.isUseLogForCounts());
                     ((CheckBox) entryFieldMap.get("useLogForArea")).setSelected(config.isUseLogForArea());
+
                 }
             }
         });
 
-        fp.getChildren().add(b);
-        vbox.getChildren().add(fp);
-        setContent(new BorderPane(vbox));
+        FlowPane buttonPane = new FlowPane();
+        buttonPane.setAlignment(Pos.CENTER);
+        buttonPane.setPadding(new Insets(20, 20, 20, 20));
+        buttonPane.getChildren().add(b);
+
+        BorderPane gapPane = new BorderPane();
+        gapPane.setPrefSize(200, 300);
+
+        gaps = new VBox();
+
+        for (Integer gap : app.getPrimeGapSet()) {
+            CheckBox cb = new CheckBox(gap.toString());
+            cb.setSelected(app.getPrimeGapSet().contains(gap));
+            gaps.getChildren().add(cb);
+        }
+
+        ScrollPane sp = new ScrollPane(gaps);
+ 
+        gapPane.setCenter(sp);
+        FlowPane fp = new FlowPane();
+        fp.getChildren().add(b = new Button("Select All"));
+
+        b.setOnAction(e -> {
+            selectAllGaps();
+        });
+        fp.getChildren().add(b = new Button("Clear All"));
+
+        b.setOnAction(e -> {
+            deSelectAllGaps();
+        });
+
+        gapPane.setBottom(fp);
+        HBox hbox = new HBox();
+        hbox.setSpacing(5.0);
+        Label l = new Label("Prime Gaps:");
+        l.setPrefWidth(DEFAULT_LABEL_WIDTH);
+        l.setAlignment(Pos.CENTER_RIGHT);
+
+        hbox.getChildren().add(l);
+        hbox.getChildren().add(gapPane);
+        vbox.getChildren().add(new Label(""));
+        vbox.getChildren().add(hbox);
+
+        BorderPane bp = new BorderPane(vbox);
+        bp.setBottom(buttonPane);
+        setContent(bp);
     }
 
     UnaryOperator<Change> numberFilter = change -> {
@@ -174,4 +232,24 @@ public class ConfigurationTab extends Tab {
 
         return retval;
     }
+
+    private void selectAllGaps() {
+        newConfig.getSelectedGaps().clear();
+        for (Integer gap : app.getPrimeGapSet()) {
+            newConfig.getSelectedGaps().add(gap);
+        }
+
+        for (Node node : gaps.getChildren()) {
+            ((CheckBox) node).setSelected(true);
+        }
+
+    }
+
+    private void deSelectAllGaps() {
+        newConfig.getSelectedGaps().clear();
+        for (Node node : gaps.getChildren()) {
+            ((CheckBox) node).setSelected(false);
+        }
+    }
+
 }

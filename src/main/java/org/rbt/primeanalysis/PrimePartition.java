@@ -14,10 +14,12 @@ public class PrimePartition implements Serializable, Comparable {
     private BigDecimal count = BigDecimal.ZERO;
     private BigDecimal originalTorusArea = BigDecimal.ZERO;
     private Integer index = 0;
+    private Integer gap = 0;
     private final PrimeAnalysis app;
-    public PrimePartition(PrimeAnalysis app, BigDecimal originalTorusArea, BigDecimal radian) {
+    public PrimePartition(PrimeAnalysis app, BigDecimal originalTorusArea, BigDecimal radian, Integer gap) {
         this.radian = radian;
         this.app = app;
+        this.gap = gap;
         this.originalTorusArea = originalTorusArea;
     }
 
@@ -124,6 +126,10 @@ public class PrimePartition implements Serializable, Comparable {
     @Override
     public int hashCode() {
         return radian.hashCode();
+    }
+
+    public Integer getGap() {
+        return gap;
     }
 
     

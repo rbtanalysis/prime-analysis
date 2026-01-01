@@ -10,8 +10,8 @@ import java.io.FileReader;
 import java.io.LineNumberReader;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.TreeSet;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -74,6 +75,7 @@ public class PrimeAnalysis extends Application {
     private Stage stage;
     private TabPane mainTabs = null;
     List<BigDecimal> primes = null;
+    TreeSet<Integer> primeGapSet = null;
 
     public static void main(String[] args) {
         launch();
@@ -104,6 +106,8 @@ public class PrimeAnalysis extends Application {
 
         if (primes == null) {
             primes = loadPrimes();
+            primeGapSet =  loadPrimeGapSet(primes);
+
         }
 
         Platform.runLater(() -> {
@@ -309,7 +313,7 @@ public class PrimeAnalysis extends Application {
         for (PrimePartition pp : partitions) {
             Double crCnt = pp.getCount().doubleValue();
             BigDecimal rads = pp.getRadian();
-            if ((rads.compareTo(startRadians) > 0) && (rads.compareTo(endRadians) < 0)) {
+            if (isDesiredData(startRadians, endRadians, rads, pp.getGap())) {
                 series.getData().add(new XYChart.Data(rads.doubleValue(), crCnt));
             }
             cnt++;
@@ -364,7 +368,7 @@ public class PrimeAnalysis extends Application {
         List<PrimePartition> pTemp = new ArrayList(partitionMap.values());
         List<PrimePartition> partitions = new ArrayList();
         for (PrimePartition pp : pTemp) {
-            if ((pp.getRadian().compareTo(startRadians) > 0) && (pp.getRadian().compareTo(endRadians) < 0)) {
+            if (isDesiredData(startRadians, endRadians, pp.getRadian(), pp.getGap())) {
                 partitions.add(pp);
             }
         }
@@ -500,15 +504,16 @@ public class PrimeAnalysis extends Application {
 
         Long maxCount = Long.MIN_VALUE;
         for (BigDecimal rads : areas) {
-            BigDecimal crCnt = pmap.get(rads).getCount();
-            if ((rads.compareTo(startRadians) > 0) && (rads.compareTo(endRadians) < 0)) {
+            PrimePartition pp = pmap.get(rads);
+            BigDecimal crCnt = pp.getCount();
+            if (isDesiredData(startRadians, endRadians, rads, pp.getGap())) {
                 series.getData().add(new XYChart.Data(rads.toString(), crCnt.longValue()));
                 if (crCnt.longValue() > maxCount) {
                     maxCount = crCnt.longValue();
                 }
             }
         }
-        
+
         retval.getData().add(series);
 
         yAxis.setLowerBound(0);
@@ -527,6 +532,10 @@ public class PrimeAnalysis extends Application {
         return retval;
     }
 
+    private Boolean isDesiredData(BigDecimal startRadians, BigDecimal endRadians, BigDecimal currads, Integer gap) {
+        return ((currads.compareTo(startRadians) > 0) && (currads.compareTo(endRadians) < 0) && config.getSelectedGaps().contains(gap));
+    }
+    
     protected Map<BigDecimal, PrimePartition> getPartitions(List<BigDecimal> primes) {
         Map<BigDecimal, PrimePartition> retval = new HashMap();
         BigDecimal pp = null;
@@ -550,7 +559,8 @@ public class PrimeAnalysis extends Application {
                 PrimePartition partition = retval.get(radians);
 
                 if (partition == null) {
-                    partition = new PrimePartition(this, ta, radians);
+                    Integer diff = Long.valueOf(prime.longValue() - pp.longValue()).intValue();
+                    partition = new PrimePartition(this, ta, radians, diff);
                 }
 
                 partition.incrementCount();
@@ -603,11 +613,30 @@ public class PrimeAnalysis extends Application {
 
     }
 
+    protected TreeSet<Integer> loadPrimeGapSet(List<BigDecimal> primes) {
+        TreeSet<Integer> retval = new TreeSet();
+        Long pp = null;
+        for (BigDecimal prime : primes) {
+            if (pp != null) {
+                Long diff = prime.longValue() - pp;
+                retval.add(diff.intValue());
+                config.getSelectedGaps().add(diff.intValue());
+            }
+            pp = prime.longValue();
+        }
+
+        System.out.println("found " + retval.size() + " distinct gaps");
+        
+        return retval;
+
+    }
+
     protected List<BigDecimal> loadPrimes() {
         List<BigDecimal> retval = new ArrayList();
         for (int i = 0; i < config.getPrimeFileLoadCount(); ++i) {
             retval.addAll(loadPrimeFile(i + 1));
         }
+
         return retval;
     }
 
@@ -751,4 +780,8 @@ public class PrimeAnalysis extends Application {
     public Stage getStage() {
         return stage;
     }
-}
+
+    public TreeSet<Integer> getPrimeGapSet() {
+        return primeGapSet;
+    }
+ }
