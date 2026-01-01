@@ -11,6 +11,7 @@ import java.io.LineNumberReader;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -452,7 +453,12 @@ public class PrimeAnalysis extends Application {
     }
 
     private String getChartTitle(Integer numPartitions) {
-        return "Prime Counts by Radian\npartition count: " + numPartitions + ", prime count: " + primes.size();
+        DecimalFormat df = new DecimalFormat("##,###,###");
+        return "Prime Counts by Radian - partition count=" 
+                + df.format(numPartitions) + ", prime count=" 
+                + df.format(primes.size() )
+                + ", decimal scale=" 
+                + config.getBigDecimalScale().getScale();
 
     }
 
