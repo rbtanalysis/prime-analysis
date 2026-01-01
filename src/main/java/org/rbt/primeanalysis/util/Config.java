@@ -80,19 +80,8 @@ public class Config {
         retval.setUseLogForCounts(useLogForCounts);
         retval.setUseLogForArea(useLogForArea);
 
-        return retval;
+         return retval;
     }
-
-
-    /*
-
-    public void update(Config in) {
-        this.primeFileLoadCount = in.getPrimeFileLoadCount();
-        this.bigDecimalScale = in.getBigDecimalScale();
-        this.useLog = in.isUseLog();
-        this.setRanges(in.getRanges());
-    }
-*/
 
     public BigDecimalScale getBigDecimalScale() {
         return bigDecimalScale;

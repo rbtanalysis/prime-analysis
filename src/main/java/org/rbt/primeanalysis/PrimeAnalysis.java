@@ -95,7 +95,7 @@ public class PrimeAnalysis extends Application {
 
         stage.setScene(getChartScene(new Message(message)));
         stage.show();
-  
+
         if (mainTabs == null) {
             mainTabs = new TabPane();
             mainTabs.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
@@ -148,13 +148,12 @@ public class PrimeAnalysis extends Application {
                         } else {
                             l.add(PrimePartition.CSV_HEADER);
                         }
-                        
+
                         if (config.isUseLogForArea()) {
                             l.add(PrimePartition.CSV_HEADER.replace("Area", "ln(Area)"));
                         } else {
                             l.add(PrimePartition.CSV_HEADER);
                         }
-
 
                         for (PrimePartition pp : partitions) {
                             l.add(pp.toString());
@@ -188,15 +187,15 @@ public class PrimeAnalysis extends Application {
         TableColumn<PrimePartition, BigDecimal> radianCol = new TableColumn("Adjusted Radian");
         TableColumn<PrimePartition, BigDecimal> degreeCol = new TableColumn("Degrees");
         TableColumn<PrimePartition, BigDecimal> prevCol = new TableColumn("Previous Radian");
-        
+
         TableColumn<PrimePartition, BigDecimal> areaCol = null;
-        
-          if (config.isUseLogForCounts()) {
+
+        if (config.isUseLogForCounts()) {
             areaCol = new TableColumn("ln(Area)");
         } else {
             areaCol = new TableColumn("Area");
         }
-        
+
         TableColumn<PrimePartition, BigDecimal> fullRadianCol = new TableColumn("Full Radian");
         TableColumn<PrimePartition, BigDecimal> radianDecCol = new TableColumn("Radian Decrease");
 
@@ -301,7 +300,7 @@ public class PrimeAnalysis extends Application {
         retval.setPrefWidth(config.getChartWidth() - (Constants.DEFAULT_CHART_WIDTH_REDUCTION * config.getChartWidth()));
 
         retval.setTitle(title);
-        XYChart.Series series = getSeries();
+        XYChart.Series series = getSeries(retval);
 
         int cnt = 0;
 
@@ -340,7 +339,6 @@ public class PrimeAnalysis extends Application {
         yAxis.setLabel(getCountLabel());
         yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound()) / 20.0);
         retval.getData().add(series);
-
         return retval;
     }
 
@@ -393,7 +391,7 @@ public class PrimeAnalysis extends Application {
         MinMaxHolder mmCount = this.getMinMaxCount(startRadians, endRadians, partitions);
         List<Node> anodes = new ArrayList();
         for (PrimePartition pp : partitions) {
-            XYChart.Series series = getSeries();
+            XYChart.Series series = getSeries(retval);
 
             series.getData().add(new XYChart.Data(0, 0));
             BigDecimal count = pp.getCount();
@@ -454,10 +452,10 @@ public class PrimeAnalysis extends Application {
 
     private String getChartTitle(Integer numPartitions) {
         DecimalFormat df = new DecimalFormat("##,###,###");
-        return "Prime Counts by Radian - partition count=" 
-                + df.format(numPartitions) + ", prime count=" 
-                + df.format(primes.size() )
-                + ", decimal scale=" 
+        return "Prime Counts by Radian\npartition count="
+                + df.format(numPartitions) + " prime count="
+                + df.format(primes.size())
+                + " decimal scale="
                 + config.getBigDecimalScale().getScale();
 
     }
@@ -510,15 +508,16 @@ public class PrimeAnalysis extends Application {
                 }
             }
         }
-
+        
         retval.getData().add(series);
+
         yAxis.setLowerBound(0);
         yAxis.setUpperBound(maxCount);
         yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound()) / 5);
         return retval;
     }
 
-    XYChart.Series getSeries() {
+    XYChart.Series getSeries(XYChart chart) {
         return getSeries("radians");
     }
 
