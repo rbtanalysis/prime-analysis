@@ -66,6 +66,10 @@ public class PrimeAnalysis extends Application {
     }
 
     public void load(Config config, String message) {
+        load(config, message, false);
+    }
+    
+    public void load(Config config, String message, boolean clear) {
         this.config = config;
 
         stage.setScene(getChartScene(new Message(message)));
@@ -79,7 +83,6 @@ public class PrimeAnalysis extends Application {
         if (primes == null) {
             primes = loadPrimes();
             primeGapSet =  loadPrimeGapSet(primes);
-
         }
 
         Platform.runLater(() -> {
@@ -87,6 +90,10 @@ public class PrimeAnalysis extends Application {
 
             List<Tab> tabs = mainTabs.getTabs();
 
+            if (clear) {
+                tabs.clear();
+            }
+            
             if ((tabs == null) || tabs.isEmpty()) {
                 mainTabs.getTabs().add(new PartitionsScatterChart(this, "Scatter", partitionMap));
                 mainTabs.getTabs().add(new PartitionsBarChart(this, "Bar", partitionMap));

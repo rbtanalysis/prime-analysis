@@ -101,7 +101,7 @@ public class ConfigurationTab extends Tab {
 
             newConfig.setSelectedGaps(selectedGaps);
 
-            app.load(newConfig, "Applying configuration updates...");
+            app.load(newConfig, "Applying configuration updates and reloading...", true);
         });
 
         setOnSelectionChanged(new EventHandler<Event>() {

@@ -89,7 +89,9 @@ public class BaseChartTab extends Tab {
     }
 
     protected Boolean isDesiredData(BigDecimal startRadians, BigDecimal endRadians, BigDecimal currads, Integer gap) {
-        return ((currads.compareTo(startRadians) > 0) && (currads.compareTo(endRadians) < 0) && app.getConfig().getSelectedGaps().contains(gap));
+        return ((currads.compareTo(startRadians) > 0) 
+                && (currads.compareTo(endRadians) < 0) 
+                && getConfig().getSelectedGaps().contains(gap));
     }
 
     protected void addContextMenu(TabPane tp) {

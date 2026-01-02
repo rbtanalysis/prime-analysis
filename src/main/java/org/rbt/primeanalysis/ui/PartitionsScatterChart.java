@@ -27,6 +27,7 @@ public class PartitionsScatterChart extends BaseChartTab {
     public PartitionsScatterChart(PrimeAnalysis app, String tabName, Map<BigDecimal, PrimePartition> partitionMap) {
         super(app, tabName, partitionMap);
         TabPane tp = initTabPane(Side.BOTTOM);
+        
         for (MinMaxHolder range : app.getConfig().getRanges()) {
             Tab tab = new Tab();
             tab.setText(range.getMin() + "-" + range.getMax());
@@ -60,8 +61,8 @@ public class PartitionsScatterChart extends BaseChartTab {
             BigDecimal rads = pp.getRadian();
             if (isDesiredData(startRadians, endRadians, rads, pp.getGap())) {
                 series.getData().add(new XYChart.Data(rads.doubleValue(), crCnt));
+                cnt++;
             }
-            cnt++;
         }
 
         xAxis.setTickLabelFormatter(new StringConverter<Number>() {
