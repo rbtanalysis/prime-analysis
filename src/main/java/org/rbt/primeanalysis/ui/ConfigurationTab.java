@@ -1,4 +1,4 @@
-package org.rbt.primeanalysis;
+package org.rbt.primeanalysis.ui;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,6 +23,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import org.rbt.primeanalysis.PrimeAnalysis;
 import org.rbt.primeanalysis.util.Config;
 import org.rbt.primeanalysis.util.MinMaxHolder;
 
