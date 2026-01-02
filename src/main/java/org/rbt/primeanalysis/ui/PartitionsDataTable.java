@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package org.rbt.primeanalysis.ui;
 
 import java.math.BigDecimal;
@@ -19,7 +15,7 @@ import org.rbt.primeanalysis.PrimePartition;
  *
  * @author rbtuc
  */
-public class PartitionsDataTable extends TableView{
+public class PartitionsDataTable extends TableView {
     public PartitionsDataTable (PrimeAnalysis app, Map<BigDecimal, PrimePartition> partitionMap) {
         super();
         buildTable(app, partitionMap);

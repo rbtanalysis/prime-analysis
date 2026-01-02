@@ -34,6 +34,7 @@ import org.rbt.primeanalysis.ui.PartitionsBarChart;
 import org.rbt.primeanalysis.ui.PartitionsDataTable;
 import org.rbt.primeanalysis.ui.PartitionsScatterChart;
 import org.rbt.primeanalysis.ui.PartitionsVectorChart;
+import org.rbt.primeanalysis.ui.PrimeSpiralChart;
 import org.rbt.primeanalysis.util.Message;
 import org.rbt.primeanalysis.util.Util;
 
@@ -98,6 +99,7 @@ public class PrimeAnalysis extends Application {
                 mainTabs.getTabs().add(new PartitionsScatterChart(this, "Scatter", partitionMap));
                 mainTabs.getTabs().add(new PartitionsBarChart(this, "Bar", partitionMap));
                 mainTabs.getTabs().add(new PartitionsVectorChart(this, "Vector", partitionMap));
+                mainTabs.getTabs().add(new PrimeSpiralChart(this, "Spiral", partitionMap));
                 mainTabs.getTabs().add(new Tab("Partition Data"));
                 mainTabs.getTabs().add(new ConfigurationTab(this));
             }
@@ -147,7 +149,7 @@ public class PrimeAnalysis extends Application {
 
             bp.setTop(b);
             if (tabs != null) {
-                tabs.get(3).setContent(bp);
+                tabs.get(4).setContent(bp);
             }
             
             mainTabs.getSelectionModel().selectFirst();
