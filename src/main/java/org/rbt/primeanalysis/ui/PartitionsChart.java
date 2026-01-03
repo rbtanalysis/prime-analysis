@@ -7,7 +7,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
@@ -24,9 +27,8 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.Tooltip;
@@ -48,7 +50,6 @@ public class PartitionsChart extends BorderPane {
 
     final double ZOOM_FACTOR = 1.1;
     private double scaleValue = 1.0;
-
     private final PrimeAnalysis app;
 
     public PartitionsChart(PrimeAnalysis app, Map<BigDecimal, PrimePartition> partitionMap) {
@@ -56,6 +57,7 @@ public class PartitionsChart extends BorderPane {
         FlowPane fp = new FlowPane();
         setTop(getChartTitle(partitionMap.size()));
         TabPane tp = new TabPane();
+
         tp.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         tp.setSide(Side.BOTTOM);
 
@@ -64,15 +66,31 @@ public class PartitionsChart extends BorderPane {
             tab.setText(range.getMin() + "-" + range.getMax());
             XYChart chart = buildPartitionsScatterChart(partitionMap, range.getMin(), range.getMax());
             chart.setPrefSize(Constants.DEFAULT_CHART_WIDTH, Constants.DEFAULT_CHART_HEIGHT);
-            
+
             tab.setContent(chart);
-            
+
             app.getUtil().makeDraggable(chart);
 
             tp.getTabs().add(tab);
         }
 
         addContextMenu(tp);
+
+        SingleSelectionModel<Tab> selectionModel = tp.getSelectionModel();
+        selectionModel.selectedItemProperty().addListener(new ChangeListener<Tab>() {
+            @Override
+            public void changed(ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) {
+                scaleValue = 1.0;
+
+                XYChart oldChart = (XYChart) oldTab.getContent();
+                XYChart newChart = (XYChart) newTab.getContent();
+                oldChart.setScaleX(scaleValue);
+                oldChart.setScaleY(scaleValue);
+                newChart.setScaleX(scaleValue);
+                newChart.setScaleY(scaleValue);
+            }
+        });
+
         setCenter(tp);
 
         setPadding(new Insets(2, 10, 10, 10));
@@ -220,9 +238,9 @@ public class PartitionsChart extends BorderPane {
 
     protected FlowPane getChartTitle(Integer numPartitions) {
         FlowPane retval = new FlowPane();
-        
+
         DecimalFormat df = new DecimalFormat("##,###,###");
-        
+
         StringBuilder s = new StringBuilder();
         s.append("Prime Counts by Radian: ");
         s.append("partition count=");
@@ -250,6 +268,5 @@ public class PartitionsChart extends BorderPane {
             return "count";
         }
     }
-    
-    
+
 }

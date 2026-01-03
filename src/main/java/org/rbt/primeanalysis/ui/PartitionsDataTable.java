@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import javafx.geometry.Insets;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.rbt.primeanalysis.PrimeAnalysis;
 import org.rbt.primeanalysis.PrimePartition;
+import org.rbt.primeanalysis.util.Constants;
 
 /**
  *
@@ -19,6 +21,7 @@ public class PartitionsDataTable extends TableView {
     public PartitionsDataTable (PrimeAnalysis app, Map<BigDecimal, PrimePartition> partitionMap) {
         super();
         buildTable(app, partitionMap);
+        setPadding(new Insets(10, 10, 10, 10));
     }
     
     private void buildTable(PrimeAnalysis app, Map<BigDecimal, PrimePartition> partitionMap) {
@@ -65,6 +68,8 @@ public class PartitionsDataTable extends TableView {
         }
         
         getItems().addAll(partitions);
+        
+        this.setWidth(Constants.DEFAULT_CHART_WIDTH / 2.0);
     }
 
 }
