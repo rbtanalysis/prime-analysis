@@ -129,5 +129,16 @@ public class PrimePartition implements Serializable, Comparable {
         return gap;
     }
 
-    
+    public String getToolTipText() {
+        StringBuilder retval = new StringBuilder();
+        
+        retval.append("radian: ");
+        retval.append(getRadian());
+        retval.append("\ngap: ");
+        retval.append(getGap());
+        retval.append("\ncount: ");
+        retval.append(getCount());
+        
+        return retval.toString();
+    }
 }

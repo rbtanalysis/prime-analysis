@@ -39,14 +39,15 @@ import org.rbt.primeanalysis.util.Util;
  * JavaFX App
  */
 public class PrimeAnalysis extends Application {
-
+    final double ZOOM_FACTOR = 1.1;
     private static final FileChooser FILE_CHOOSER = new FileChooser();
     private Config config = new Config();
     private Util util;
     private Stage stage;
     private TabPane mainTabs = null;
-    List<BigDecimal> primes = null;
-    TreeSet<Integer> primeGapSet = null;
+    private List<BigDecimal> primes = null;
+    private TreeSet<Integer> primeGapSet = null;
+    private double scaleValue = 1.0;
 
     public static void main(String[] args) {
         launch();
@@ -83,6 +84,7 @@ public class PrimeAnalysis extends Application {
                 primes = loadPrimes();
                 primeGapSet = loadPrimeGapSet(primes);
             }
+
             Map<BigDecimal, PrimePartition> partitionMap = getPartitions(primes);
 
             List<Tab> tabs = mainTabs.getTabs();
@@ -92,14 +94,14 @@ public class PrimeAnalysis extends Application {
             }
 
             if ((tabs == null) || tabs.isEmpty()) {
-                mainTabs.getTabs().add(new PartitionsChart(this, "Scatter", partitionMap));
+                Tab t = new Tab("Partitions");
+                t.setContent(new PartitionsChart(this, partitionMap));
+                mainTabs.getTabs().add(t);
                 mainTabs.getTabs().add(new Tab("Partition Data"));
                 mainTabs.getTabs().add(new ConfigurationTab(this));
             }
 
             ScrollPane sp = new ScrollPane(new PartitionsDataTable(this, partitionMap));
-            sp.setFitToHeight(true);
-            sp.setFitToWidth(true);
             BorderPane bp = new BorderPane(sp);
             Button b = new Button("Export to CSV");
 
@@ -149,6 +151,22 @@ public class PrimeAnalysis extends Application {
 
             stage.close();
             stage.setScene(getChartScene(new BorderPane(mainTabs)));
+            final PartitionsChart chart = (PartitionsChart) mainTabs.getTabs().get(0).getContent();
+            chart.setOnScroll(event -> {
+                event.consume(); // Prevent the event from bubbling up
+
+                double zoomFactor = (event.getDeltaY() > 0) ? ZOOM_FACTOR : 1 / ZOOM_FACTOR;
+
+                // Calculate new scale value and clamp it
+                scaleValue *= zoomFactor;
+               // scaleValue = clamp(scaleValue, 0.5, 5.0); // Limit zoom between 0.5x and 5.0x
+
+                // Apply the new scale transformation
+                chart.setScaleX(scaleValue);
+                chart.setScaleY(scaleValue);
+
+            });
+
             stage.show();
 
         });

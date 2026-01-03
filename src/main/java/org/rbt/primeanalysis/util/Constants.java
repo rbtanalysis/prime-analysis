@@ -34,7 +34,7 @@ public class Constants {
     // array of min,max big decimals to define scale for
     // chart display 
     public static final String[][] DEFAULT_PARTITION_RANGES = {
-        {"1.500", "1.580"},
+        {"1.536", "1.572"},
         {"1.560", "1.571"},
         {"1.567", "1.571"},
         {"1.569", "1.571"},
