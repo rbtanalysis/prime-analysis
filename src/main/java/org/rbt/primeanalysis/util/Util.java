@@ -48,6 +48,9 @@ public class Util {
             // Record the initial mouse position relative to the node's current translation
             mouseAnchorX = event.getSceneX() - node.getTranslateX();
             mouseAnchorY = event.getSceneY() - node.getTranslateY();
+            if (node.getUserData() == null) {
+                node.setUserData(new Double[] {event.getSceneX(), event.getSceneY()});
+            }
             event.consume();
         });
 
@@ -58,4 +61,4 @@ public class Util {
             event.consume();
         });
     }
-  }
+}

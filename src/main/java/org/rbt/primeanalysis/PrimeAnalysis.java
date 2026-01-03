@@ -154,7 +154,6 @@ public class PrimeAnalysis extends Application {
 
             mainTabs.getSelectionModel().selectFirst();
 
-            stage.close();
             stage.setScene(getChartScene(new BorderPane(mainTabs)));
             stage.show();
         });

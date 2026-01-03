@@ -7,11 +7,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.print.PageLayout;
@@ -72,6 +73,7 @@ public class PartitionsChart extends BorderPane {
             app.getUtil().makeDraggable(chart);
 
             tp.getTabs().add(tab);
+
         }
 
         addContextMenu(tp);
@@ -79,15 +81,23 @@ public class PartitionsChart extends BorderPane {
         SingleSelectionModel<Tab> selectionModel = tp.getSelectionModel();
         selectionModel.selectedItemProperty().addListener(new ChangeListener<Tab>() {
             @Override
-            public void changed(ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) {
+            public void changed(ObservableValue<? extends Tab> obs, Tab oldTab, Tab newTab) {
                 scaleValue = 1.0;
 
-                XYChart oldChart = (XYChart) oldTab.getContent();
-                XYChart newChart = (XYChart) newTab.getContent();
-                oldChart.setScaleX(scaleValue);
-                oldChart.setScaleY(scaleValue);
-                newChart.setScaleX(scaleValue);
-                newChart.setScaleY(scaleValue);
+                Platform.runLater(() -> {
+                    XYChart oldChart = (XYChart) oldTab.getContent();
+                    XYChart newChart = (XYChart) newTab.getContent();
+                    oldChart.setScaleX(scaleValue);
+                    oldChart.setScaleY(scaleValue);
+                    newChart.setScaleX(scaleValue);
+                    newChart.setScaleY(scaleValue);
+
+                    newChart.setTranslateX(0);
+                    newChart.setTranslateY(0);
+                    oldChart.setTranslateX(0);
+                    oldChart.setTranslateY(0);
+
+                });
             }
         });
 
@@ -97,7 +107,6 @@ public class PartitionsChart extends BorderPane {
     }
 
     private XYChart buildPartitionsScatterChart(Map<BigDecimal, PrimePartition> pmap, BigDecimal startRadians, BigDecimal endRadians) {
-
         final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis();
 
@@ -161,7 +170,7 @@ public class PartitionsChart extends BorderPane {
             // Calculate new scale value and clamp it
             double tmp = scaleValue * zoomFactor;
 
-            if (tmp >= 1.0) {
+            if (tmp >= 0.25) {
                 scaleValue = tmp;
                 // Apply the new scale transformation
                 retval.setScaleX(scaleValue);
