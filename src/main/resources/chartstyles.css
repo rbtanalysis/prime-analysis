@@ -1,15 +1,11 @@
 .chart-series-line {
     -fx-stroke: darkblue;
-    -fx-stroke-width: 1.0;
+    -fx-stroke-width: 1.5;
 }
 
-.chart-symbol {
-    -fx-background-color: darkblue;
-    -fx-padding: 2.5;
-}
-
-.chart-bar {
-    -fx-bar-fill: darkblue;
+.chart-line-symbol {
+    -fx-background-color: crimson;
+    -fx-padding: 2.0;
 }
 
 .chart-plot-background {

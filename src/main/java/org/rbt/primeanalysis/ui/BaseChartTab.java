@@ -31,8 +31,8 @@ import org.rbt.primeanalysis.util.MinMaxHolder;
  * @author rbtuc
  */
 public class BaseChartTab extends Tab {
-    private PrimeAnalysis app;
-    private Map<BigDecimal, PrimePartition> partitionMap;
+    private final PrimeAnalysis app;
+    private final Map<BigDecimal, PrimePartition> partitionMap;
 
     public BaseChartTab(PrimeAnalysis app, String tabName, Map<BigDecimal, PrimePartition> partitionMap) {
         super(tabName);
@@ -76,10 +76,6 @@ public class BaseChartTab extends Tab {
 
     public Map<BigDecimal, PrimePartition> getPartitionMap() {
         return partitionMap;
-    }
-
-    protected XYChart.Series getSeries(XYChart chart) {
-        return getSeries("radians");
     }
 
     protected XYChart.Series getSeries(String name) {

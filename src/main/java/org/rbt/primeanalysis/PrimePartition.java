@@ -8,7 +8,7 @@ import java.math.BigDecimal;
  * @author rbtuc
  */
 public class PrimePartition implements Serializable, Comparable {
-    public static final String CSV_HEADER = "Adjusted Radian,Degrees,Previous Adjusted Radian,UnAdjusted Radian,Torus Area,Prime Count,Radian Decrease";       
+    public static final String CSV_HEADER = "Radian,Degrees,Previous Radian,Full Radian,Area,Count";       
     private BigDecimal radian = BigDecimal.ZERO;
     private BigDecimal previousRadian = BigDecimal.ZERO;
     private BigDecimal count = BigDecimal.ZERO;
@@ -49,9 +49,6 @@ public class PrimePartition implements Serializable, Comparable {
         retval.append(originalTorusArea);
         retval.append(",");
         retval.append(getCount());
-        
-        retval.append(",");
-        retval.append(getRadianDecrease());
                 
         return retval.toString();
     }

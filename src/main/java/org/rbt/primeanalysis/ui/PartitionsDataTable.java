@@ -36,7 +36,6 @@ public class PartitionsDataTable extends TableView {
         }
 
         TableColumn<PrimePartition, BigDecimal> fullRadianCol = new TableColumn("Full Radian");
-        TableColumn<PrimePartition, BigDecimal> radianDecCol = new TableColumn("Radian Decrease");
 
         TableColumn<PrimePartition, BigDecimal> countCol = null;
         if (app.getConfig().isUseLogForCounts()) {
@@ -45,7 +44,7 @@ public class PartitionsDataTable extends TableView {
             countCol = new TableColumn("Count");
         }
 
-        getColumns().addAll(indexCol, radianCol, degreeCol, prevCol, areaCol, fullRadianCol, radianDecCol, countCol);
+        getColumns().addAll(indexCol, radianCol, degreeCol, prevCol, areaCol, fullRadianCol, countCol);
 
         indexCol.setCellValueFactory(new PropertyValueFactory<>("index"));
         radianCol.setCellValueFactory(new PropertyValueFactory<>("radian"));
@@ -53,7 +52,6 @@ public class PartitionsDataTable extends TableView {
         prevCol.setCellValueFactory(new PropertyValueFactory<>("previousRadian"));
         areaCol.setCellValueFactory(new PropertyValueFactory<>("originalTorusArea"));
         fullRadianCol.setCellValueFactory(new PropertyValueFactory<>("fullRadian"));
-        radianDecCol.setCellValueFactory(new PropertyValueFactory<>("radianDecrease"));
 
         countCol.setCellValueFactory(new PropertyValueFactory<>("count"));
 

@@ -7,8 +7,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import javafx.geometry.Side;
+import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -22,9 +22,9 @@ import org.rbt.primeanalysis.util.MinMaxHolder;
  *
  * @author rbtuc
  */
-public class PartitionsScatterChart extends BaseChartTab {
+public class PartitionsChart extends BaseChartTab {
 
-    public PartitionsScatterChart(PrimeAnalysis app, String tabName, Map<BigDecimal, PrimePartition> partitionMap) {
+    public PartitionsChart(PrimeAnalysis app, String tabName, Map<BigDecimal, PrimePartition> partitionMap) {
         super(app, tabName, partitionMap);
         TabPane tp = initTabPane(Side.BOTTOM);
         
@@ -46,13 +46,10 @@ public class PartitionsScatterChart extends BaseChartTab {
         xAxis.setAutoRanging(false);
         //      yAxis.setAutoRanging(false);
 
-        XYChart<Number, Number> retval = new ScatterChart<Number, Number>(xAxis, yAxis);
+        XYChart<Number, Number> retval = new LineChart<Number, Number>(xAxis, yAxis);
         retval.setPrefWidth(getConfig().getChartWidth() - (Constants.DEFAULT_CHART_WIDTH_REDUCTION * getConfig().getChartWidth()));
-
+        retval.setLegendVisible(false);
         retval.setTitle(title);
-        XYChart.Series series = getSeries(retval);
-
-        int cnt = 0;
 
         List<PrimePartition> partitions = new ArrayList(pmap.values());
         Collections.sort(partitions);
@@ -60,8 +57,12 @@ public class PartitionsScatterChart extends BaseChartTab {
             Double crCnt = pp.getCount().doubleValue();
             BigDecimal rads = pp.getRadian();
             if (isDesiredData(startRadians, endRadians, rads, pp.getGap())) {
+                XYChart.Series series = getSeries("");
+               
+                series.setName("");
+                series.getData().add(new XYChart.Data(rads.doubleValue(), 0));
                 series.getData().add(new XYChart.Data(rads.doubleValue(), crCnt));
-                cnt++;
+                retval.getData().add(series);
             }
         }
 
@@ -88,7 +89,6 @@ public class PartitionsScatterChart extends BaseChartTab {
 
         yAxis.setLabel(getCountLabel());
         yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound()) / 20.0);
-        retval.getData().add(series);
         return retval;
     }
 

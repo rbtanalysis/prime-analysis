@@ -30,11 +30,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
-import org.rbt.primeanalysis.ui.PartitionsBarChart;
 import org.rbt.primeanalysis.ui.PartitionsDataTable;
-import org.rbt.primeanalysis.ui.PartitionsScatterChart;
-import org.rbt.primeanalysis.ui.PartitionsVectorChart;
-import org.rbt.primeanalysis.ui.PrimeSpiralChart;
+import org.rbt.primeanalysis.ui.PartitionsChart;
 import org.rbt.primeanalysis.util.Message;
 import org.rbt.primeanalysis.util.Util;
 
@@ -69,7 +66,7 @@ public class PrimeAnalysis extends Application {
     public void load(Config config, String message) {
         load(config, message, false);
     }
-    
+
     public void load(Config config, String message, boolean clear) {
         this.config = config;
 
@@ -81,12 +78,11 @@ public class PrimeAnalysis extends Application {
             mainTabs.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         }
 
-        if (primes == null) {
-            primes = loadPrimes();
-            primeGapSet =  loadPrimeGapSet(primes);
-        }
-
         Platform.runLater(() -> {
+            if (primes == null) {
+                primes = loadPrimes();
+                primeGapSet = loadPrimeGapSet(primes);
+            }
             Map<BigDecimal, PrimePartition> partitionMap = getPartitions(primes);
 
             List<Tab> tabs = mainTabs.getTabs();
@@ -94,22 +90,19 @@ public class PrimeAnalysis extends Application {
             if (clear) {
                 tabs.clear();
             }
-            
+
             if ((tabs == null) || tabs.isEmpty()) {
-                mainTabs.getTabs().add(new PartitionsScatterChart(this, "Scatter", partitionMap));
-                mainTabs.getTabs().add(new PartitionsBarChart(this, "Bar", partitionMap));
-                mainTabs.getTabs().add(new PartitionsVectorChart(this, "Vector", partitionMap));
-                mainTabs.getTabs().add(new PrimeSpiralChart(this, "Spiral", partitionMap));
+                mainTabs.getTabs().add(new PartitionsChart(this, "Scatter", partitionMap));
                 mainTabs.getTabs().add(new Tab("Partition Data"));
                 mainTabs.getTabs().add(new ConfigurationTab(this));
             }
-            
+
             ScrollPane sp = new ScrollPane(new PartitionsDataTable(this, partitionMap));
             sp.setFitToHeight(true);
             sp.setFitToWidth(true);
             BorderPane bp = new BorderPane(sp);
             Button b = new Button("Export to CSV");
-            
+
             b.setOnAction(new EventHandler() {
                 public void handleEvent(ActionEvent e) {
                 }
@@ -149,12 +142,14 @@ public class PrimeAnalysis extends Application {
 
             bp.setTop(b);
             if (tabs != null) {
-                tabs.get(4).setContent(bp);
+                tabs.get(1).setContent(bp);
             }
-            
+
             mainTabs.getSelectionModel().selectFirst();
 
+            stage.close();
             stage.setScene(getChartScene(new BorderPane(mainTabs)));
+            stage.show();
 
         });
 
@@ -227,6 +222,7 @@ public class PrimeAnalysis extends Application {
 
         return retval;
     }
+
     private void writeCsv(String name, List<String> lines) {
         PrintWriter pw = null;
         try {
@@ -255,7 +251,7 @@ public class PrimeAnalysis extends Application {
         }
 
         System.out.println("found " + retval.size() + " distinct gaps");
-        
+
         return retval;
 
     }
@@ -363,4 +359,4 @@ public class PrimeAnalysis extends Application {
     public List<BigDecimal> getPrimes() {
         return primes;
     }
-  }
+}
