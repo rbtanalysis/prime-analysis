@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
 import javafx.geometry.Side;
 import javafx.print.PageLayout;
 import javafx.print.PageOrientation;
@@ -16,14 +18,14 @@ import javafx.print.PrinterJob;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.Tooltip;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Transform;
@@ -38,7 +40,6 @@ import org.rbt.primeanalysis.util.MinMaxHolder;
  * @author rbtuc
  */
 public class PartitionsChart extends HBox {
-
     private final PrimeAnalysis app;
     private final Map<BigDecimal, PrimePartition> partitionMap;
 
@@ -46,6 +47,7 @@ public class PartitionsChart extends HBox {
         this.app = app;
         this.partitionMap = partitionMap;
         TabPane tp = new TabPane();
+        tp.setPrefSize(Constants.DEFAULT_CHART_WIDTH, Constants.DEFAULT_CHART_HEIGHT);
         tp.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         tp.setSide(Side.BOTTOM);
 
@@ -58,7 +60,9 @@ public class PartitionsChart extends HBox {
 
         addContextMenu(tp);
 
-        getChildren().add(new ScrollPane(tp));
+        getChildren().add(tp);
+        
+       setPadding(new Insets(2,10,10,10));
     }
 
     private XYChart buildPartitionsScatterChart(Map<BigDecimal, PrimePartition> pmap, String title, BigDecimal startRadians, BigDecimal endRadians) {
@@ -70,7 +74,7 @@ public class PartitionsChart extends HBox {
         //      yAxis.setAutoRanging(false);
 
         XYChart<Number, Number> retval = new LineChart<Number, Number>(xAxis, yAxis);
-        retval.setPrefWidth(app.getConfig().getChartWidth() - (Constants.DEFAULT_CHART_WIDTH_REDUCTION * app.getConfig().getChartWidth()));
+        retval.setPrefWidth(app.getConfig().getChartWidth());
         retval.setLegendVisible(false);
         retval.setTitle(title);
 
@@ -114,11 +118,11 @@ public class PartitionsChart extends HBox {
         xAxis.setLowerBound(startRadians.doubleValue());
         xAxis.setUpperBound(endRadians.doubleValue());
 
-        xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound()) / 20.0);
+        xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound()) / 10.0);
 
         yAxis.setLabel(getCountLabel());
-        yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound()) / 20.0);
-
+        yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound()) / 5.0);
+        
         return retval;
     }
 
@@ -134,8 +138,8 @@ public class PartitionsChart extends HBox {
     }
 
     private ContextMenu getChartContextMenu(TabPane tabPane) {
-        MenuItem print = new MenuItem("Print");
-        MenuItem exit = new MenuItem("Exit");
+        MenuItem print = new MenuItem("Print Chart");
+        MenuItem exit = new MenuItem("Exit Application");
 
         print.setOnAction((ActionEvent e) -> {
             Printer printer = Printer.getDefaultPrinter();
@@ -157,13 +161,24 @@ public class PartitionsChart extends HBox {
         });
 
         exit.setOnAction((ActionEvent e) -> {
-            System.exit(0);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation Dialog");
+            alert.getButtonTypes().clear(); 
+            alert.getButtonTypes().add(ButtonType.YES);
+            alert.getButtonTypes().add(ButtonType.NO);
+            alert.setHeaderText("Are you sure you want to exit?");
+            
+            Optional<ButtonType> result = alert.showAndWait();
+
+            if (result.isPresent() && result.get() == ButtonType.YES) {
+                System.exit(0);
+            }
         });
 
         // 3. Create a ContextMenu and add MenuItems to it
         ContextMenu retval = new ContextMenu();
-
         retval.getItems().addAll(print, new SeparatorMenuItem(), exit);
+        
         return retval;
     }
 

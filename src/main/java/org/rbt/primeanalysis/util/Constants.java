@@ -19,7 +19,6 @@ public class Constants {
 
     public static final Integer DEFAULT_CHART_WIDTH = 1400;
     public static final Integer DEFAULT_CHART_HEIGHT = 800;
-    public static final Double DEFAULT_CHART_WIDTH_REDUCTION = 0.07;
 
     // 1 to 50 (contains 1 million primes each) - set to any value 1 to 50
     public static final Integer DEFAULT_PRIME_FILE_LOAD_CNT = 50;
