@@ -21,12 +21,16 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.Tooltip;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Transform;
 import javafx.util.StringConverter;
@@ -39,33 +43,42 @@ import org.rbt.primeanalysis.util.MinMaxHolder;
  *
  * @author rbtuc
  */
-public class PartitionsChart extends HBox {
+public class PartitionsChart extends BorderPane {
+
+    final double ZOOM_FACTOR = 1.1;
+    private double scaleValue = 1.0;
+
     private final PrimeAnalysis app;
-    private final Map<BigDecimal, PrimePartition> partitionMap;
 
     public PartitionsChart(PrimeAnalysis app, Map<BigDecimal, PrimePartition> partitionMap) {
         this.app = app;
-        this.partitionMap = partitionMap;
+
+        setTop(getChartTitle(partitionMap.size()));
         TabPane tp = new TabPane();
-        tp.setPrefSize(Constants.DEFAULT_CHART_WIDTH, Constants.DEFAULT_CHART_HEIGHT);
         tp.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         tp.setSide(Side.BOTTOM);
 
         for (MinMaxHolder range : app.getConfig().getRanges()) {
             Tab tab = new Tab();
             tab.setText(range.getMin() + "-" + range.getMax());
-            tab.setContent(buildPartitionsScatterChart(partitionMap, getChartTitle(partitionMap.size()), range.getMin(), range.getMax()));
+            ScrollPane sp = new ScrollPane(tab.getContent());
+            sp.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+            sp.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
+            XYChart chart = buildPartitionsScatterChart(partitionMap, range.getMin(), range.getMax());
+            chart.setPrefSize(Constants.DEFAULT_CHART_WIDTH, Constants.DEFAULT_CHART_HEIGHT);
+            sp.setContent(chart);
+            tab.setContent(sp);
             tp.getTabs().add(tab);
         }
 
         addContextMenu(tp);
 
-        getChildren().add(tp);
-        
-       setPadding(new Insets(2,10,10,10));
+        setCenter(tp);
+
+        setPadding(new Insets(2, 10, 10, 10));
     }
 
-    private XYChart buildPartitionsScatterChart(Map<BigDecimal, PrimePartition> pmap, String title, BigDecimal startRadians, BigDecimal endRadians) {
+    private XYChart buildPartitionsScatterChart(Map<BigDecimal, PrimePartition> pmap, BigDecimal startRadians, BigDecimal endRadians) {
 
         final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis();
@@ -76,7 +89,6 @@ public class PartitionsChart extends HBox {
         XYChart<Number, Number> retval = new LineChart<Number, Number>(xAxis, yAxis);
         retval.setPrefWidth(app.getConfig().getChartWidth());
         retval.setLegendVisible(false);
-        retval.setTitle(title);
 
         List<PrimePartition> partitions = new ArrayList(pmap.values());
         Collections.sort(partitions);
@@ -122,7 +134,25 @@ public class PartitionsChart extends HBox {
 
         yAxis.setLabel(getCountLabel());
         yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound()) / 5.0);
-        
+
+        retval.setOnScroll(event -> {
+            event.consume(); // Prevent the event from bubbling up
+
+            double zoomFactor = (event.getDeltaY() > 0) ? ZOOM_FACTOR : 1 / ZOOM_FACTOR;
+
+            // Calculate new scale value and clamp it
+            double tmp = scaleValue * zoomFactor;
+
+            if (tmp >= 1.0) {
+                scaleValue = tmp;
+                // Apply the new scale transformation
+                retval.setScaleX(scaleValue);
+                retval.setScaleY(scaleValue);
+
+            }
+
+        });
+
         return retval;
     }
 
@@ -163,11 +193,11 @@ public class PartitionsChart extends HBox {
         exit.setOnAction((ActionEvent e) -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Confirmation Dialog");
-            alert.getButtonTypes().clear(); 
+            alert.getButtonTypes().clear();
             alert.getButtonTypes().add(ButtonType.YES);
             alert.getButtonTypes().add(ButtonType.NO);
             alert.setHeaderText("Are you sure you want to exit?");
-            
+
             Optional<ButtonType> result = alert.showAndWait();
 
             if (result.isPresent() && result.get() == ButtonType.YES) {
@@ -178,7 +208,7 @@ public class PartitionsChart extends HBox {
         // 3. Create a ContextMenu and add MenuItems to it
         ContextMenu retval = new ContextMenu();
         retval.getItems().addAll(print, new SeparatorMenuItem(), exit);
-        
+
         return retval;
     }
 
@@ -188,14 +218,16 @@ public class PartitionsChart extends HBox {
                 && app.getConfig().getSelectedGaps().contains(gap));
     }
 
-    protected String getChartTitle(Integer numPartitions) {
-        DecimalFormat df = new DecimalFormat("##,###,###");
-        return "Prime Counts by Radian\npartition count="
-                + df.format(numPartitions) + " prime count="
-                + df.format(app.getPrimes().size())
-                + " decimal scale="
-                + app.getConfig().getBigDecimalScale().getScale();
+    protected VBox getChartTitle(Integer numPartitions) {
+        VBox retval = new VBox();
 
+        DecimalFormat df = new DecimalFormat("##,###,###");
+        retval.getChildren().add(new Label("Prime Counts by Radian"));
+        retval.getChildren().add(new Label("partition count=" + df.format(numPartitions)));
+        retval.getChildren().add(new Label("prime count=" + df.format(app.getPrimes().size())));
+        retval.getChildren().add(new Label("decimal scale=" + app.getConfig().getBigDecimalScale().getScale()));
+
+        return retval;
     }
 
     protected XYChart.Series getSeries(String name) {

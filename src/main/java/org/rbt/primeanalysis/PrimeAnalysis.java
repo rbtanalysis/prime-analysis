@@ -39,7 +39,6 @@ import org.rbt.primeanalysis.util.Util;
  * JavaFX App
  */
 public class PrimeAnalysis extends Application {
-    final double ZOOM_FACTOR = 1.1;
     private static final FileChooser FILE_CHOOSER = new FileChooser();
     private Config config = new Config();
     private Util util;
@@ -47,7 +46,6 @@ public class PrimeAnalysis extends Application {
     private TabPane mainTabs = null;
     private List<BigDecimal> primes = null;
     private TreeSet<Integer> primeGapSet = null;
-    private double scaleValue = 1.0;
 
     public static void main(String[] args) {
         launch();
@@ -151,22 +149,6 @@ public class PrimeAnalysis extends Application {
 
             stage.close();
             stage.setScene(getChartScene(new BorderPane(mainTabs)));
-            final PartitionsChart chart = (PartitionsChart) mainTabs.getTabs().get(0).getContent();
-            chart.setOnScroll(event -> {
-                event.consume(); // Prevent the event from bubbling up
-
-                double zoomFactor = (event.getDeltaY() > 0) ? ZOOM_FACTOR : 1 / ZOOM_FACTOR;
-
-                // Calculate new scale value and clamp it
-                scaleValue *= zoomFactor;
-               // scaleValue = clamp(scaleValue, 0.5, 5.0); // Limit zoom between 0.5x and 5.0x
-
-                // Apply the new scale transformation
-                chart.setScaleX(scaleValue);
-                chart.setScaleY(scaleValue);
-
-            });
-
             stage.show();
 
         });
