@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.print.PageLayout;
 import javafx.print.PageOrientation;
@@ -30,7 +31,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Transform;
 import javafx.util.StringConverter;
@@ -52,7 +53,7 @@ public class PartitionsChart extends BorderPane {
 
     public PartitionsChart(PrimeAnalysis app, Map<BigDecimal, PrimePartition> partitionMap) {
         this.app = app;
-
+        FlowPane fp = new FlowPane();
         setTop(getChartTitle(partitionMap.size()));
         TabPane tp = new TabPane();
         tp.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
@@ -61,18 +62,17 @@ public class PartitionsChart extends BorderPane {
         for (MinMaxHolder range : app.getConfig().getRanges()) {
             Tab tab = new Tab();
             tab.setText(range.getMin() + "-" + range.getMax());
-            ScrollPane sp = new ScrollPane(tab.getContent());
-            sp.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
-            sp.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
             XYChart chart = buildPartitionsScatterChart(partitionMap, range.getMin(), range.getMax());
             chart.setPrefSize(Constants.DEFAULT_CHART_WIDTH, Constants.DEFAULT_CHART_HEIGHT);
-            sp.setContent(chart);
-            tab.setContent(sp);
+            
+            tab.setContent(chart);
+            
+            app.getUtil().makeDraggable(chart);
+
             tp.getTabs().add(tab);
         }
 
         addContextMenu(tp);
-
         setCenter(tp);
 
         setPadding(new Insets(2, 10, 10, 10));
@@ -218,15 +218,22 @@ public class PartitionsChart extends BorderPane {
                 && app.getConfig().getSelectedGaps().contains(gap));
     }
 
-    protected VBox getChartTitle(Integer numPartitions) {
-        VBox retval = new VBox();
-
+    protected FlowPane getChartTitle(Integer numPartitions) {
+        FlowPane retval = new FlowPane();
+        
         DecimalFormat df = new DecimalFormat("##,###,###");
-        retval.getChildren().add(new Label("Prime Counts by Radian"));
-        retval.getChildren().add(new Label("partition count=" + df.format(numPartitions)));
-        retval.getChildren().add(new Label("prime count=" + df.format(app.getPrimes().size())));
-        retval.getChildren().add(new Label("decimal scale=" + app.getConfig().getBigDecimalScale().getScale()));
+        
+        StringBuilder s = new StringBuilder();
+        s.append("Prime Counts by Radian: ");
+        s.append("partition count=");
+        s.append(df.format(numPartitions));
+        s.append(" prime count=");
+        s.append(df.format(app.getPrimes().size()));
+        s.append(" decimal scale=");
+        s.append(app.getConfig().getBigDecimalScale().getScale());
 
+        retval.setAlignment(Pos.CENTER);
+        retval.getChildren().add(new Label(s.toString()));
         return retval;
     }
 
@@ -243,5 +250,6 @@ public class PartitionsChart extends BorderPane {
             return "count";
         }
     }
-
+    
+    
 }

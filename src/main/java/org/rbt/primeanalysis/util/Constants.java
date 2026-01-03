@@ -17,8 +17,8 @@ public class Constants {
             + "-fx-padding: 0; "
             + "-fx-fill: darkred;";
 
-    public static final Integer DEFAULT_CHART_WIDTH = 1200;
-    public static final Integer DEFAULT_CHART_HEIGHT = 800;
+    public static final Integer DEFAULT_CHART_WIDTH = 1400;
+    public static final Integer DEFAULT_CHART_HEIGHT = 700;
 
     // 1 to 50 (contains 1 million primes each) - set to any value 1 to 50
     public static final Integer DEFAULT_PRIME_FILE_LOAD_CNT = 50;

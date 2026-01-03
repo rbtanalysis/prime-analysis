@@ -32,6 +32,7 @@ import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
 import org.rbt.primeanalysis.ui.PartitionsDataTable;
 import org.rbt.primeanalysis.ui.PartitionsChart;
+import org.rbt.primeanalysis.util.Constants;
 import org.rbt.primeanalysis.util.Message;
 import org.rbt.primeanalysis.util.Util;
 
@@ -39,6 +40,7 @@ import org.rbt.primeanalysis.util.Util;
  * JavaFX App
  */
 public class PrimeAnalysis extends Application {
+
     private static final FileChooser FILE_CHOOSER = new FileChooser();
     private Config config = new Config();
     private Util util;
@@ -69,17 +71,22 @@ public class PrimeAnalysis extends Application {
     public void load(Config config, String message, boolean clear) {
         this.config = config;
 
-        stage.setScene(getChartScene(new Message(message)));
-        stage.show();
-
-        if (mainTabs == null) {
-            mainTabs = new TabPane();
-            mainTabs.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+        if (primes == null) {
+            stage.setScene(getChartScene(new Message(message), Constants.DEFAULT_CHART_WIDTH, Constants.DEFAULT_CHART_HEIGHT));
+        } else {
+            stage.setScene(getChartScene(new Message(message), stage.getScene().getWidth(), stage.getScene().getHeight()));
         }
 
+        stage.show();
+
         Platform.runLater(() -> {
+            if (mainTabs == null) {
+                mainTabs = new TabPane();
+                mainTabs.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+            }
+
             if (primes == null) {
-                primes = loadPrimes();
+                primes = this.loadPrimes();
                 primeGapSet = loadPrimeGapSet(primes);
             }
 
@@ -150,13 +157,18 @@ public class PrimeAnalysis extends Application {
             stage.close();
             stage.setScene(getChartScene(new BorderPane(mainTabs)));
             stage.show();
-
         });
 
     }
 
     private Scene getChartScene(Pane pane) {
-        Scene retval = new Scene(pane, config.getChartWidth(), config.getChartHeight());
+        Scene retval = new Scene(pane);
+        retval.getStylesheets().add(getClass().getResource("/chartstyles.css").toExternalForm());
+        return retval;
+    }
+
+    private Scene getChartScene(Pane pane, double width, double height) {
+        Scene retval = new Scene(pane, width, height);
         retval.getStylesheets().add(getClass().getResource("/chartstyles.css").toExternalForm());
         return retval;
     }
