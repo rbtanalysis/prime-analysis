@@ -12,7 +12,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
-import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.print.PageLayout;
@@ -28,6 +27,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
@@ -48,10 +48,9 @@ import org.rbt.primeanalysis.util.MinMaxHolder;
  * @author rbtuc
  */
 public class PartitionsChart extends BorderPane {
-
     final double ZOOM_FACTOR = 1.1;
-    private double scaleValue = 1.0;
-    private final PrimeAnalysis app;
+   private final PrimeAnalysis app;
+    private final ZoomHandler zoomHandler = new ZoomHandler();
 
     public PartitionsChart(PrimeAnalysis app, Map<BigDecimal, PrimePartition> partitionMap) {
         this.app = app;
@@ -73,7 +72,6 @@ public class PartitionsChart extends BorderPane {
             app.getUtil().makeDraggable(chart);
 
             tp.getTabs().add(tab);
-
         }
 
         addContextMenu(tp);
@@ -82,26 +80,14 @@ public class PartitionsChart extends BorderPane {
         selectionModel.selectedItemProperty().addListener(new ChangeListener<Tab>() {
             @Override
             public void changed(ObservableValue<? extends Tab> obs, Tab oldTab, Tab newTab) {
-                scaleValue = 1.0;
-
-                Platform.runLater(() -> {
-                    XYChart oldChart = (XYChart) oldTab.getContent();
-                    XYChart newChart = (XYChart) newTab.getContent();
-                    oldChart.setScaleX(scaleValue);
-                    oldChart.setScaleY(scaleValue);
-                    newChart.setScaleX(scaleValue);
-                    newChart.setScaleY(scaleValue);
-
-                    newChart.setTranslateX(0);
-                    newChart.setTranslateY(0);
-                    oldChart.setTranslateX(0);
-                    oldChart.setTranslateY(0);
-
+                 Platform.runLater(() -> {
+                    zoomHandler.clear((XYChart) oldTab.getContent());
+                    zoomHandler.clear((XYChart) newTab.getContent());
                 });
             }
         });
 
-        setCenter(tp);
+        setCenter(new ScrollPane(tp));
 
         setPadding(new Insets(2, 10, 10, 10));
     }
@@ -164,51 +150,13 @@ public class PartitionsChart extends BorderPane {
         yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound()) / 5.0);
 
         retval.setOnScroll(event -> {
-            event.consume(); // Prevent the event from bubbling up
-
             double zoomFactor = (event.getDeltaY() > 0) ? ZOOM_FACTOR : 1 / ZOOM_FACTOR;
-
-            // Calculate new scale value and clamp it
-            double tmp = scaleValue * zoomFactor;
-
-            if (tmp >= 0.25) {
-                scaleValue = tmp;
-                // Apply the new scale transformation
-                retval.setScaleX(scaleValue);
-                retval.setScaleY(scaleValue);
-
-                scaleLine(scaleValue, retval);
-
-            }
+            zoomHandler.zoom(retval, zoomFactor, event.getSceneX(), event.getSceneY());
+            event.consume();
 
         });
 
         return retval;
-    }
-
-    private void scaleLine(Double scale, XYChart chart) {
-        String style1 = "-fx-padding: 0;";
-        String style2 = null;
-
-        if (scale > 5.0) {
-            style1 = "fx-stroke-width: 0.05; -fx-padding: 0;";
-            style2 = "fx-stroke-width: 0.05; -fx-padding: 0.075;";
-        } else if (scale > 3.0) {
-            style1 = "fx-stroke-width: 0.1; -fx-padding: 0;";
-            style2 = "fx-stroke-width: 0.1 -fx-padding: 0.15;";
-        } else if (scale > 1.25) {
-            style1 = "fx-stroke-width: 0.15; -fx-padding: 0;";
-            style2 = "fx-stroke-width: 0.15; -fx-padding: 0.2;";
-        }
-        
-        for (Object o : chart.getData()) {
-            XYChart.Series series = (XYChart.Series)o;
-            XYChart.Data d = (XYChart.Data) series.getData().get(0);
-            d.getNode().setStyle(style1);
-            d = (XYChart.Data) series.getData().get(1);
-            d.getNode().setStyle(style2);
-        }
-
     }
 
     protected void addContextMenu(TabPane tp) {
