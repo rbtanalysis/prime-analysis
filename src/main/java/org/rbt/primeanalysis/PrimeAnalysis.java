@@ -180,7 +180,7 @@ public class PrimeAnalysis extends Application {
         BigDecimal minArea = util.toBigDecimal("" + Double.MAX_VALUE);
         for (BigDecimal prime : primes) {
             if (pp != null) {
-                BigDecimal ta = getTorusArea(prime, pp);
+                BigDecimal ta = getArea(prime, pp);
 
                 if (ta.compareTo(maxArea) > 0) {
                     maxArea = ta;
@@ -283,12 +283,14 @@ public class PrimeAnalysis extends Application {
     }
 
     // 3 dim torus
-    protected BigDecimal getTorusArea(BigDecimal p, BigDecimal prev) {
+    protected BigDecimal getArea(BigDecimal p, BigDecimal prev) {
         BigDecimal gap = util.toBigDecimal(p.subtract(prev));
-        BigDecimal r = gap.divide(util.toBigDecimal("2.0"), config.getBigDecimalScale().getScale(), config.getBigDecimalScale().getRoundingMode());
-        BigDecimal R = util.toBigDecimal(p.subtract(r));
+   //     BigDecimal r = gap.divide(util.toBigDecimal("2.0"), config.getBigDecimalScale().getScale(), config.getBigDecimalScale().getRoundingMode());
+    //    BigDecimal r = gap;
+     //   BigDecimal R = p;
 
-        return util.toBigDecimal(R.multiply(r).multiply(util.piSquared()).multiply(util.toBigDecimal("4.0")));
+        // torus area 
+        return util.toBigDecimal(p.multiply(gap).multiply(util.piSquared()).multiply(util.toBigDecimal("4.0")));
     }
 
     private List<BigDecimal> loadPrimeFile(int indx) {

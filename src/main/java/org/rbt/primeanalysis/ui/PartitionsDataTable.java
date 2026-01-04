@@ -53,7 +53,7 @@ public class PartitionsDataTable extends TableView {
         radianCol.setCellValueFactory(new PropertyValueFactory<>("radian"));
         degreeCol.setCellValueFactory(new PropertyValueFactory<>("degrees"));
         prevCol.setCellValueFactory(new PropertyValueFactory<>("previousRadian"));
-        areaCol.setCellValueFactory(new PropertyValueFactory<>("originalTorusArea"));
+        areaCol.setCellValueFactory(new PropertyValueFactory<>("originalArea"));
         fullRadianCol.setCellValueFactory(new PropertyValueFactory<>("fullRadian"));
 
         countCol.setCellValueFactory(new PropertyValueFactory<>("count"));

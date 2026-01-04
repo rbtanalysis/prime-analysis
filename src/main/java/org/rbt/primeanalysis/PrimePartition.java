@@ -12,15 +12,16 @@ public class PrimePartition implements Serializable, Comparable {
     private BigDecimal radian = BigDecimal.ZERO;
     private BigDecimal previousRadian = BigDecimal.ZERO;
     private BigDecimal count = BigDecimal.ZERO;
-    private BigDecimal originalTorusArea = BigDecimal.ZERO;
+    private BigDecimal originalArea = BigDecimal.ZERO;
     private Integer index = 0;
     private Integer gap = 0;
     private final PrimeAnalysis app;
-    public PrimePartition(PrimeAnalysis app, BigDecimal originalTorusArea, BigDecimal radian, Integer gap) {
+    
+    public PrimePartition(PrimeAnalysis app, BigDecimal originalArea, BigDecimal radian, Integer gap) {
         this.radian = radian;
         this.app = app;
         this.gap = gap;
-        this.originalTorusArea = originalTorusArea;
+        this.originalArea = originalArea;
     }
 
     public BigDecimal getDegrees() {
@@ -46,7 +47,7 @@ public class PrimePartition implements Serializable, Comparable {
         retval.append(",");
         retval.append(getFullRadian());
         retval.append(",");
-        retval.append(originalTorusArea);
+        retval.append(originalArea);
         retval.append(",");
         retval.append(getCount());
                 
@@ -74,7 +75,7 @@ public class PrimePartition implements Serializable, Comparable {
     }
 
     public BigDecimal getFullRadian() {
-        return app.getUtil().toBigDecimal(originalTorusArea.divide(
+        return app.getUtil().toBigDecimal(originalArea.divide(
                 app.getUtil().twoPi(), 
                 app.getConfig().getBigDecimalScale().getScale(), 
                 app.getConfig().getBigDecimalScale().getRoundingMode()));
@@ -96,16 +97,16 @@ public class PrimePartition implements Serializable, Comparable {
         this.previousRadian = previousRadian;
     }
 
-    public BigDecimal getOriginalTorusArea() {
+    public BigDecimal getOriginalArea() {
         if (app.getConfig().isUseLogForArea()) {
-            return app.getUtil().toBigDecimal(Math.log(originalTorusArea.doubleValue()));
+            return app.getUtil().toBigDecimal(Math.log(originalArea.doubleValue()));
         } else {
-            return originalTorusArea;
+            return originalArea;
         }
     }
 
-    public void setOriginalTorusArea(BigDecimal originalTorusArea) {
-        this.originalTorusArea = originalTorusArea;
+    public void setOriginalTorusArea(BigDecimal originalArea) {
+        this.originalArea = originalArea;
     }
     
     

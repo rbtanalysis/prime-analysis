@@ -136,7 +136,7 @@ public class PartitionsChart extends BorderPane {
                 retval.getData().add(series);
                 Tooltip.install(data2.getNode(), tt);
                 data1.getNode().setStyle("-fx-padding: 0;");
-           }
+            }
         }
 
         xAxis.setTickLabelFormatter(new StringConverter<Number>() {
@@ -176,28 +176,39 @@ public class PartitionsChart extends BorderPane {
                 // Apply the new scale transformation
                 retval.setScaleX(scaleValue);
                 retval.setScaleY(scaleValue);
-                
-                 if (scaleValue > 4.0) {
-                    for (XYChart.Series s : retval.getData()) {
-                        XYChart.Data d = (XYChart.Data)s.getData().get(0);
-                        d.getNode().setStyle("fx-stroke-width: 0.2;");
-                        d = (XYChart.Data)s.getData().get(1);
-                        d.getNode().setStyle("fx-stroke-width: 0.15; -fx-padding: 0.25;");
-                    }
-                } else {
-                   for (XYChart.Series s : retval.getData()) {
-                       XYChart.Data d = (XYChart.Data)s.getData().get(0);
-                        d.getNode().setStyle("-fx-padding: 0;");
-                        d = (XYChart.Data)s.getData().get(1);
-                        d.getNode().setStyle(null);
-                    }
-                }
+
+                scaleLine(scaleValue, retval);
 
             }
- 
+
         });
 
         return retval;
+    }
+
+    private void scaleLine(Double scale, XYChart chart) {
+        String style1 = "-fx-padding: 0;";
+        String style2 = null;
+
+        if (scale > 5.0) {
+            style1 = "fx-stroke-width: 0.05; -fx-padding: 0;";
+            style2 = "fx-stroke-width: 0.05; -fx-padding: 0.075;";
+        } else if (scale > 3.0) {
+            style1 = "fx-stroke-width: 0.1; -fx-padding: 0;";
+            style2 = "fx-stroke-width: 0.1 -fx-padding: 0.15;";
+        } else if (scale > 1.25) {
+            style1 = "fx-stroke-width: 0.15; -fx-padding: 0;";
+            style2 = "fx-stroke-width: 0.15; -fx-padding: 0.2;";
+        }
+        
+        for (Object o : chart.getData()) {
+            XYChart.Series series = (XYChart.Series)o;
+            XYChart.Data d = (XYChart.Data) series.getData().get(0);
+            d.getNode().setStyle(style1);
+            d = (XYChart.Data) series.getData().get(1);
+            d.getNode().setStyle(style2);
+        }
+
     }
 
     protected void addContextMenu(TabPane tp) {
