@@ -126,16 +126,17 @@ public class PartitionsChart extends BorderPane {
                 XYChart.Series series = getSeries("");
 
                 series.setName("");
-                series.getData().add(new XYChart.Data(rads.doubleValue(), 0));
+                XYChart.Data data1 = new XYChart.Data(rads.doubleValue(), 0);
+                series.getData().add(data1);
 
-                XYChart.Data data = new XYChart.Data(rads.doubleValue(), crCnt);
-                series.getData().add(data);
+                XYChart.Data data2 = new XYChart.Data(rads.doubleValue(), crCnt);
+                series.getData().add(data2);
 
                 Tooltip tt = new Tooltip(pp.getToolTipText());
-
                 retval.getData().add(series);
-                Tooltip.install(data.getNode(), tt);
-            }
+                Tooltip.install(data2.getNode(), tt);
+                data1.getNode().setStyle("-fx-padding: 0;");
+           }
         }
 
         xAxis.setTickLabelFormatter(new StringConverter<Number>() {
@@ -175,9 +176,25 @@ public class PartitionsChart extends BorderPane {
                 // Apply the new scale transformation
                 retval.setScaleX(scaleValue);
                 retval.setScaleY(scaleValue);
+                
+                 if (scaleValue > 4.0) {
+                    for (XYChart.Series s : retval.getData()) {
+                        XYChart.Data d = (XYChart.Data)s.getData().get(0);
+                        d.getNode().setStyle("fx-stroke-width: 0.2;");
+                        d = (XYChart.Data)s.getData().get(1);
+                        d.getNode().setStyle("fx-stroke-width: 0.15; -fx-padding: 0.25;");
+                    }
+                } else {
+                   for (XYChart.Series s : retval.getData()) {
+                       XYChart.Data d = (XYChart.Data)s.getData().get(0);
+                        d.getNode().setStyle("-fx-padding: 0;");
+                        d = (XYChart.Data)s.getData().get(1);
+                        d.getNode().setStyle(null);
+                    }
+                }
 
             }
-
+ 
         });
 
         return retval;
