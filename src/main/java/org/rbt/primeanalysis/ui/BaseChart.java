@@ -99,10 +99,14 @@ public class BaseChart  extends BorderPane {
         return retval;
     }
 
+    protected boolean isDesiredData(Integer gap) {
+        return app.getConfig().getSelectedGaps().contains(gap);
+    }
     protected boolean isDesiredData(BigDecimal startRadians, BigDecimal endRadians, BigDecimal currads, Integer gap) {
+        
         return ((currads.compareTo(startRadians) > 0)
                 && (currads.compareTo(endRadians) < 0)
-                && app.getConfig().getSelectedGaps().contains(gap));
+                && isDesiredData(gap));
     }
 
     protected FlowPane getChartTitle(String name, Integer numPartitions) {
