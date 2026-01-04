@@ -1,6 +1,7 @@
 package org.rbt.primeanalysis.util;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import javafx.scene.Node;
 import org.rbt.primeanalysis.PrimeAnalysis;
 
@@ -9,6 +10,7 @@ import org.rbt.primeanalysis.PrimeAnalysis;
  * @author rbtuc
  */
 public class Util {
+    private final DecimalFormat SCI_FORMAT = new DecimalFormat("0.########E0");
 
     private final PrimeAnalysis app;
     private double mouseAnchorX;
@@ -60,5 +62,9 @@ public class Util {
             node.setTranslateY(event.getSceneY() - mouseAnchorY);
             event.consume();
         });
+    }
+    
+    public String toScientific(BigDecimal in) {
+        return SCI_FORMAT.format(in);
     }
 }

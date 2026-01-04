@@ -47,7 +47,7 @@ public class PrimePartition implements Serializable, Comparable {
         retval.append(",");
         retval.append(getFullRadian());
         retval.append(",");
-        retval.append(originalArea);
+        retval.append(getOriginalArea());
         retval.append(",");
         retval.append(getCount());
                 
@@ -97,12 +97,15 @@ public class PrimePartition implements Serializable, Comparable {
         this.previousRadian = previousRadian;
     }
 
-    public BigDecimal getOriginalArea() {
+    public String getOriginalArea() {
+        BigDecimal retval;
         if (app.getConfig().isUseLogForArea()) {
-            return app.getUtil().toBigDecimal(Math.log(originalArea.doubleValue()));
+            retval = app.getUtil().toBigDecimal(Math.log(originalArea.doubleValue()));
         } else {
-            return originalArea;
+            retval = originalArea;
         }
+        
+        return app.getUtil().toScientific(retval);
     }
 
     public void setOriginalTorusArea(BigDecimal originalArea) {

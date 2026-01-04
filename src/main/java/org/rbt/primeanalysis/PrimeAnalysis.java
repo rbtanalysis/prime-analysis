@@ -32,6 +32,7 @@ import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
 import org.rbt.primeanalysis.ui.PartitionsDataTable;
 import org.rbt.primeanalysis.ui.PartitionsChart;
+import org.rbt.primeanalysis.ui.RadianConvergenceChart;
 import org.rbt.primeanalysis.util.Constants;
 import org.rbt.primeanalysis.util.Message;
 import org.rbt.primeanalysis.util.Util;
@@ -102,6 +103,9 @@ public class PrimeAnalysis extends Application {
                 Tab t = new Tab("Partitions");
                 t.setContent(new PartitionsChart(this, partitionMap));
                 mainTabs.getTabs().add(t);
+                t = new Tab("Radian Convergence");
+                t.setContent(new RadianConvergenceChart(this, partitionMap));
+                mainTabs.getTabs().add(t);
                 mainTabs.getTabs().add(new Tab("Partition Data"));
                 mainTabs.getTabs().add(new ConfigurationTab(this));
             }
@@ -149,7 +153,7 @@ public class PrimeAnalysis extends Application {
 
             bp.setTop(b);
             if (tabs != null) {
-                tabs.get(1).setContent(bp);
+                tabs.get(2).setContent(bp);
             }
 
             mainTabs.getSelectionModel().selectFirst();
@@ -285,11 +289,8 @@ public class PrimeAnalysis extends Application {
     // 3 dim torus
     protected BigDecimal getArea(BigDecimal p, BigDecimal prev) {
         BigDecimal gap = util.toBigDecimal(p.subtract(prev));
-   //     BigDecimal r = gap.divide(util.toBigDecimal("2.0"), config.getBigDecimalScale().getScale(), config.getBigDecimalScale().getRoundingMode());
-    //    BigDecimal r = gap;
-     //   BigDecimal R = p;
 
-        // torus area 
+        // torus area  4PI^2Rr - R = prime, r = gap
         return util.toBigDecimal(p.multiply(gap).multiply(util.piSquared()).multiply(util.toBigDecimal("4.0")));
     }
 
