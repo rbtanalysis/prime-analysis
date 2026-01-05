@@ -170,5 +170,4 @@ public class BaseChart  extends BorderPane {
         Tooltip tt = new Tooltip(text);
         Tooltip.install(node, tt);
     }
-
-}
+ }

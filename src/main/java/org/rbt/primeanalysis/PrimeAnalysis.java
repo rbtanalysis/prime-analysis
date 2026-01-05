@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.LineNumberReader;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -179,27 +180,16 @@ public class PrimeAnalysis extends Application {
         Map<BigDecimal, PrimePartition> retval = new HashMap();
         BigDecimal pp = null;
         BigDecimal maxCount = BigDecimal.valueOf(Long.MIN_VALUE);
-        BigDecimal maxArea = util.toBigDecimal("-1.0");
-        BigDecimal minArea = util.toBigDecimal("" + Double.MAX_VALUE);
         for (BigDecimal prime : primes) {
             if (pp != null) {
-                BigDecimal ta = getArea(prime, pp);
 
-                if (ta.compareTo(maxArea) > 0) {
-                    maxArea = ta;
-                }
-
-                if (ta.compareTo(minArea) < 0) {
-                    minArea = ta;
-                }
-
-                BigDecimal radians = getAdjustedRadians(ta, prime);
+                BigDecimal radians = getRadian(prime, pp);
 
                 PrimePartition partition = retval.get(radians);
 
                 if (partition == null) {
                     Integer diff = Long.valueOf(prime.longValue() - pp.longValue()).intValue();
-                    partition = new PrimePartition(this, ta, radians, diff);
+                    partition = new PrimePartition(this, radians, diff);
                 }
 
                 partition.incrementCount();
@@ -217,19 +207,16 @@ public class PrimeAnalysis extends Application {
 
         List<PrimePartition> l = new ArrayList(retval.values());
         Collections.sort(l);
-
-        for (int i = 1; i < l.size(); ++i) {
-            PrimePartition p1 = l.get(i - 1);
-            PrimePartition p2 = l.get(i);
-            p2.setPreviousRadian(p1.getRadian());
+        
+        int cnt = 0;
+        for (PrimePartition partition : l) {
+            partition.setIndex(++cnt);
         }
 
         System.out.println("**************************************");
         System.out.println("prime count: " + primes.size());
         System.out.println("partition count: " + retval.size());
         System.out.println("max prime: " + primes.get(primes.size() - 1).longValue());
-        System.out.println("min area: " + minArea);
-        System.out.println("max area: " + maxArea);
         System.out.println("maxCount: " + maxCount);
         System.out.println("bd scale: " + config.getBigDecimalScale().getScale());
         System.out.println("**************************************");
@@ -279,20 +266,15 @@ public class PrimeAnalysis extends Application {
         return retval;
     }
 
-    private BigDecimal getAdjustedRadians(BigDecimal torusArea, BigDecimal prime) {
-        BigDecimal tan = torusArea.divide(prime, config.getBigDecimalScale().getScale(), config.getBigDecimalScale().getRoundingMode());
-        BigDecimal rads = util.toBigDecimal(Math.atan(tan.doubleValue()));
-        return util.toBigDecimal(rads.remainder(util.twoPi()));
+    private BigDecimal getRadian(BigDecimal prime, BigDecimal pprime) {
+        Double gap = prime.subtract(pprime).doubleValue();
+        BigDecimal divisor = getUtil().toBigDecimal(Math.sqrt(Math.pow(prime.doubleValue(), 2.0) + Math.pow(gap, 2.0)));
+        BigDecimal cos = prime.divide(divisor, getConfig().getBigDecimalScale().getRoundingMode());
+        BigDecimal retval = getUtil().toBigDecimal(Math.acos(cos.doubleValue()));
+        
+        return retval;
     }
-
-    // 3 dim torus
-    protected BigDecimal getArea(BigDecimal p, BigDecimal prev) {
-        BigDecimal gap = util.toBigDecimal(p.subtract(prev));
-
-        // torus area  4PI^2Rr - R = prime, r = gap
-        return util.toBigDecimal(p.multiply(gap).multiply(util.piSquared()).multiply(util.toBigDecimal("4.0")));
-    }
-
+    
     private List<BigDecimal> loadPrimeFile(int indx) {
         List<BigDecimal> retval = new ArrayList();
         LineNumberReader lnr = null;

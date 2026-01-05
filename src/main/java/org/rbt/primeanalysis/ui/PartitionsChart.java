@@ -18,7 +18,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.Tooltip;
 import javafx.scene.layout.FlowPane;
 import javafx.util.StringConverter;
 import org.rbt.primeanalysis.PrimeAnalysis;
@@ -75,9 +74,6 @@ public class PartitionsChart extends BaseChart {
         final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis();
 
-        xAxis.setAutoRanging(false);
-        //      yAxis.setAutoRanging(false);
-
         XYChart<Number, Number> retval = new LineChart<Number, Number>(xAxis, yAxis);
         retval.setPrefWidth(getConfig().getChartWidth());
         retval.setLegendVisible(false);
@@ -118,6 +114,8 @@ public class PartitionsChart extends BaseChart {
                 return null;
             }
         });
+        
+        /*
 
         xAxis.setLowerBound(startRadians.doubleValue());
         xAxis.setUpperBound(endRadians.doubleValue());
@@ -126,7 +124,7 @@ public class PartitionsChart extends BaseChart {
 
         yAxis.setLabel(getCountLabel());
         yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound()) / 5.0);
-
+*/
         retval.setOnScroll(event -> {
             double zoomFactor = (event.getDeltaY() > 0) ? ZOOM_FACTOR : 1 / ZOOM_FACTOR;
             getZoomHandler().zoom(retval, zoomFactor, event.getSceneX(), event.getSceneY());

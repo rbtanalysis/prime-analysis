@@ -8,20 +8,18 @@ import java.math.BigDecimal;
  * @author rbtuc
  */
 public class PrimePartition implements Serializable, Comparable {
-    public static final String CSV_HEADER = "Radian,Degrees,Previous Radian,Full Radian,Area,Count";       
+
+    public static final String CSV_HEADER = "Radian,Count";
     private BigDecimal radian = BigDecimal.ZERO;
-    private BigDecimal previousRadian = BigDecimal.ZERO;
     private BigDecimal count = BigDecimal.ZERO;
-    private BigDecimal originalArea = BigDecimal.ZERO;
-    private Integer index = 0;
     private Integer gap = 0;
+    private Integer index;
     private final PrimeAnalysis app;
-    
-    public PrimePartition(PrimeAnalysis app, BigDecimal originalArea, BigDecimal radian, Integer gap) {
+
+    public PrimePartition(PrimeAnalysis app, BigDecimal radian, Integer gap) {
         this.radian = radian;
         this.app = app;
         this.gap = gap;
-        this.originalArea = originalArea;
     }
 
     public BigDecimal getDegrees() {
@@ -29,7 +27,7 @@ public class PrimePartition implements Serializable, Comparable {
     }
 
     public BigDecimal getCount() {
-                
+
         if (app.getConfig().isUseLogForCounts()) {
             return app.getUtil().toBigDecimal(Math.log(count.doubleValue()));
         } else {
@@ -37,33 +35,17 @@ public class PrimePartition implements Serializable, Comparable {
         }
     }
 
-     public String toString() {
+    public String toString() {
         StringBuilder retval = new StringBuilder();
         retval.append(radian);
         retval.append(",");
-        retval.append(getDegrees());
-        retval.append(",");
-        retval.append(previousRadian);
-        retval.append(",");
-        retval.append(getFullRadian());
-        retval.append(",");
-        retval.append(getOriginalArea());
-        retval.append(",");
         retval.append(getCount());
-                
+
         return retval.toString();
     }
-    
+
     public void incrementCount() {
         count = count.add(BigDecimal.ONE);
-    }
-
-    public Integer getIndex() {
-        return index;
-    }
-
-    public void setIndex(Integer index) {
-        this.index = index;
     }
 
     public BigDecimal getRadian() {
@@ -74,54 +56,14 @@ public class PrimePartition implements Serializable, Comparable {
         this.radian = radian;
     }
 
-    public BigDecimal getFullRadian() {
-        return app.getUtil().toBigDecimal(originalArea.divide(
-                app.getUtil().twoPi(), 
-                app.getConfig().getBigDecimalScale().getScale(), 
-                app.getConfig().getBigDecimalScale().getRoundingMode()));
-    }
-    
-    public BigDecimal getPreviousRadian() {
-        return previousRadian;
-    }
-    
-    public BigDecimal getRadianDecrease() {
-        if (previousRadian != null) {
-            return app.getUtil().toBigDecimal(radian.subtract(previousRadian));
-        } else {
-            return BigDecimal.ZERO;
-        }
-    }
-
-    public void setPreviousRadian(BigDecimal previousRadian) {
-        this.previousRadian = previousRadian;
-    }
-
-    public String getOriginalArea() {
-        BigDecimal retval;
-        if (app.getConfig().isUseLogForArea()) {
-            retval = app.getUtil().toBigDecimal(Math.log(originalArea.doubleValue()));
-        } else {
-            retval = originalArea;
-        }
-        
-        return app.getUtil().toScientific(retval);
-    }
-
-    public void setOriginalTorusArea(BigDecimal originalArea) {
-        this.originalArea = originalArea;
-    }
-    
-    
-    
     @Override
     public int compareTo(Object o) {
-        return radian.compareTo(((PrimePartition)o).getRadian());
+        return radian.compareTo(((PrimePartition) o).getRadian());
     }
 
     @Override
     public boolean equals(Object obj) {
-        return radian.equals(obj); 
+        return radian.equals(obj);
     }
 
     @Override
@@ -135,14 +77,22 @@ public class PrimePartition implements Serializable, Comparable {
 
     public String getToolTipText() {
         StringBuilder retval = new StringBuilder();
-        
+
         retval.append("radian: ");
         retval.append(getRadian());
         retval.append("\ngap: ");
         retval.append(getGap());
         retval.append("\ncount: ");
         retval.append(getCount());
-        
+
         return retval.toString();
+    }
+
+    public Integer getIndex() {
+        return index;
+    }
+
+    public void setIndex(Integer index) {
+        this.index = index;
     }
 }
