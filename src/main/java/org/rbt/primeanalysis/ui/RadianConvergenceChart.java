@@ -92,6 +92,12 @@ public class RadianConvergenceChart extends BaseChart {
         }
 
         retval.getData().add(series);
+        
+        for (Object o : series.getData()) {
+            XYChart.Data data = (XYChart.Data)o;
+            setTooltip(data.getNode(), "radian: " + data.getXValue());
+        }
+
         series.getNode().setStyle(getCustomStyle());
 
         xAxis.setTickLabelFormatter(new StringConverter<Number>() {
@@ -114,7 +120,7 @@ public class RadianConvergenceChart extends BaseChart {
         PrimePartition p2 = partitions.get(partitions.size() - 1);
 
         xAxis.setLowerBound(p1.getRadian().doubleValue());
-        xAxis.setUpperBound(p2.getRadian().doubleValue() + (0.0001 * p2.getRadian().doubleValue()));
+        xAxis.setUpperBound(p2.getRadian().doubleValue() + (0.00001 * p2.getRadian().doubleValue()));
         xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound()) / 10.0);
         yAxis.setLabel("change");
          retval.setOnScroll(event -> {
@@ -129,9 +135,8 @@ public class RadianConvergenceChart extends BaseChart {
 
     private String getCustomStyle() {
         StringBuilder retval = new StringBuilder();
-        retval.append("-fx-padding: 1.25; ");
         retval.append("-fx-opacity: 0.5; ");
-        retval.append("-fx-stroke-width: 1.5;");
+        retval.append("-fx-stroke-width: 1.75;");
         return retval.toString();
     }
 }

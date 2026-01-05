@@ -96,10 +96,9 @@ public class PartitionsChart extends BaseChart {
 
                 XYChart.Data data2 = new XYChart.Data(rads.doubleValue(), crCnt);
                 series.getData().add(data2);
-
-                Tooltip tt = new Tooltip(pp.getToolTipText());
                 retval.getData().add(series);
-                Tooltip.install(data2.getNode(), tt);
+
+                setTooltip(data2.getNode(), pp.getToolTipText());
                 data1.getNode().setStyle("-fx-padding: 0;");
             }
         }

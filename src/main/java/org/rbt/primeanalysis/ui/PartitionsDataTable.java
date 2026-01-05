@@ -68,8 +68,6 @@ public class PartitionsDataTable extends TableView {
         }
         
         getItems().addAll(partitions);
-        
-        this.setWidth(Constants.DEFAULT_CHART_WIDTH / 2.0);
     }
 
 }

@@ -11,6 +11,7 @@ import javafx.print.PageOrientation;
 import javafx.print.Paper;
 import javafx.print.Printer;
 import javafx.print.PrinterJob;
+import javafx.scene.Node;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -19,6 +20,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.transform.Scale;
@@ -164,5 +166,9 @@ public class BaseChart  extends BorderPane {
         }
     }
 
+    protected void setTooltip(Node node, String text) {
+        Tooltip tt = new Tooltip(text);
+        Tooltip.install(node, tt);
+    }
 
 }
