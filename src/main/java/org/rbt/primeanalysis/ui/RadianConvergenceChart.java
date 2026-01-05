@@ -32,8 +32,8 @@ public class RadianConvergenceChart extends BaseChart {
 
     public RadianConvergenceChart(PrimeAnalysis app, Map<BigDecimal, PrimePartition> partitionMap) {
         super(app, partitionMap);
-        FlowPane fp = new FlowPane();
-        setTop(getChartTitle("Radian Convergence", partitionMap.size()));
+      //  FlowPane fp = new FlowPane();
+        setTop(getChartTitle("Radian Growth", partitionMap.size()));
         TabPane tp = new TabPane();
 
         tp.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
@@ -75,26 +75,24 @@ public class RadianConvergenceChart extends BaseChart {
         retval.setPrefWidth(getConfig().getChartWidth());
         retval.setLegendVisible(false);
         xAxis.setAutoRanging(false);
-        //     yAxis.setAutoRanging(false);
+        yAxis.setAutoRanging(false);
 
         List<PrimePartition> partitions = new ArrayList(pmap.values());
         Collections.sort(partitions);
-        XYChart.Series series = getSeries("radian gap");
+        XYChart.Series series = getSeries("");
+        int cnt = 0;
         for (PrimePartition pp : partitions) {
-            if (pp.getPreviousRadian().doubleValue() > 0.0) {
-                BigDecimal diff = pp.getRadian().subtract(pp.getPreviousRadian());
-                BigDecimal rads = pp.getRadian();
-                if (isDesiredData(pp.getGap())) {
-                    XYChart.Data data = new XYChart.Data(rads.doubleValue(), diff.doubleValue());
-                    series.getData().add(data);
-                }
-            }
+            if (isDesiredData(pp.getGap())) {
+                XYChart.Data data = new XYChart.Data(cnt, pp.getRadian().doubleValue());
+                series.getData().add(data);
+                cnt++;
+           }
         }
 
         retval.getData().add(series);
-        
+
         for (Object o : series.getData()) {
-            XYChart.Data data = (XYChart.Data)o;
+            XYChart.Data data = (XYChart.Data) o;
             setTooltip(data.getNode(), "radian: " + data.getXValue());
         }
 
@@ -116,13 +114,18 @@ public class RadianConvergenceChart extends BaseChart {
             }
         });
 
-        PrimePartition p1 = partitions.get(1);
-        PrimePartition p2 = partitions.get(partitions.size() - 1);
-
-        xAxis.setLowerBound(p1.getRadian().doubleValue());
-        xAxis.setUpperBound(p2.getRadian().doubleValue() + (0.00001 * p2.getRadian().doubleValue()));
+        xAxis.setLowerBound(0);
+        xAxis.setUpperBound(partitions.size());
         xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound()) / 10.0);
-        yAxis.setLabel("change");
+        xAxis.setLabel("index");
+       
+        double lowerBound = partitions.get(0).getRadian().doubleValue();
+        yAxis.setLowerBound(lowerBound);
+        double upperBound = partitions.get(partitions.size() - 1).getRadian().doubleValue();
+        yAxis.setUpperBound(upperBound + (0.01 * upperBound));
+        yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound()) / 10.0);
+        xAxis.setLabel("radian");
+        
          retval.setOnScroll(event -> {
             double zoomFactor = (event.getDeltaY() > 0) ? ZOOM_FACTOR : 1 / ZOOM_FACTOR;
             getZoomHandler().zoom(retval, zoomFactor, event.getSceneX(), event.getSceneY());
