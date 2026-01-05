@@ -110,7 +110,6 @@ public class PrimeAnalysis extends Application {
                 mainTabs.getTabs().add(new ConfigurationTab(this));
             }
 
-    //        ScrollPane sp = new ScrollPane(new PartitionsDataTable(this, partitionMap));
             BorderPane bp = new BorderPane(new PartitionsDataTable(this, partitionMap));
             Button b = new Button("Export to CSV");
 
