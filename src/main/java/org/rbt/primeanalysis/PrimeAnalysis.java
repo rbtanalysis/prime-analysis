@@ -7,7 +7,6 @@ import java.io.FileReader;
 import java.io.LineNumberReader;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,7 +21,6 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
@@ -182,7 +180,6 @@ public class PrimeAnalysis extends Application {
         BigDecimal maxCount = BigDecimal.valueOf(Long.MIN_VALUE);
         for (BigDecimal prime : primes) {
             if (pp != null) {
-
                 BigDecimal radians = getRadian(prime, pp);
 
                 PrimePartition partition = retval.get(radians);
@@ -200,19 +197,14 @@ public class PrimeAnalysis extends Application {
 
                 retval.put(radians, partition);
 
-            }
-
-            pp = prime;
+            } 
+            
+            pp = getUtil().toBigDecimal(prime);
         }
 
         List<PrimePartition> l = new ArrayList(retval.values());
         Collections.sort(l);
         
-        int cnt = 0;
-        for (PrimePartition partition : l) {
-            partition.setIndex(++cnt);
-        }
-
         System.out.println("**************************************");
         System.out.println("prime count: " + primes.size());
         System.out.println("partition count: " + retval.size());
@@ -274,7 +266,7 @@ public class PrimeAnalysis extends Application {
         
         return retval;
     }
-    
+
     private List<BigDecimal> loadPrimeFile(int indx) {
         List<BigDecimal> retval = new ArrayList();
         LineNumberReader lnr = null;

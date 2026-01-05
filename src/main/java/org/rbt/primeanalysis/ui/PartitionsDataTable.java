@@ -24,7 +24,6 @@ public class PartitionsDataTable extends TableView {
     private void buildTable(PrimeAnalysis app, Map<BigDecimal, PrimePartition> partitionMap) {
         TableColumn<PrimePartition, Integer> indexCol = new TableColumn("index");
         TableColumn<PrimePartition, BigDecimal> radianCol = new TableColumn("radian");
-
         TableColumn<PrimePartition, BigDecimal> countCol;
         
         if (app.getConfig().isUseLogForCounts()) {

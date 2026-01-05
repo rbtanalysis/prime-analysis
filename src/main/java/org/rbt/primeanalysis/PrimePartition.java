@@ -7,9 +7,8 @@ import java.math.BigDecimal;
  *
  * @author rbtuc
  */
-public class PrimePartition implements Serializable, Comparable {
-
-    public static final String CSV_HEADER = "Radian,Count";
+public class PrimePartition implements Serializable, Comparable<PrimePartition> {
+    public static final String CSV_HEADER = "radian,count";
     private BigDecimal radian = BigDecimal.ZERO;
     private BigDecimal count = BigDecimal.ZERO;
     private Integer gap = 0;
@@ -17,13 +16,9 @@ public class PrimePartition implements Serializable, Comparable {
     private final PrimeAnalysis app;
 
     public PrimePartition(PrimeAnalysis app, BigDecimal radian, Integer gap) {
-        this.radian = radian;
+        this.radian = app.getUtil().toBigDecimal(radian);
         this.app = app;
         this.gap = gap;
-    }
-
-    public BigDecimal getDegrees() {
-        return app.getUtil().toBigDecimal(Math.toDegrees(radian.doubleValue()));
     }
 
     public BigDecimal getCount() {
@@ -53,17 +48,21 @@ public class PrimePartition implements Serializable, Comparable {
     }
 
     public void setRadian(BigDecimal radian) {
-        this.radian = radian;
+        this.radian = app.getUtil().toBigDecimal(radian);
     }
 
     @Override
-    public int compareTo(Object o) {
-        return radian.compareTo(((PrimePartition) o).getRadian());
+    public int compareTo(PrimePartition pp) {
+        return radian.compareTo(pp.getRadian());
     }
 
     @Override
     public boolean equals(Object obj) {
-        return radian.equals(obj);
+        if (obj instanceof PrimePartition) {
+            return radian.equals(((PrimePartition)obj).getRadian());
+        } else {
+            return false;
+        }
     }
 
     @Override

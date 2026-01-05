@@ -18,7 +18,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.layout.FlowPane;
 import javafx.util.StringConverter;
 import org.rbt.primeanalysis.PrimeAnalysis;
 import org.rbt.primeanalysis.PrimePartition;
@@ -32,7 +31,6 @@ import org.rbt.primeanalysis.util.MinMaxHolder;
 public class PartitionsChart extends BaseChart {
     public PartitionsChart(PrimeAnalysis app, Map<BigDecimal, PrimePartition> partitionMap) {
         super(app, partitionMap);
-        FlowPane fp = new FlowPane();
         setTop(getChartTitle("Radian Partitions", partitionMap.size()));
         TabPane tp = new TabPane();
 
@@ -74,7 +72,7 @@ public class PartitionsChart extends BaseChart {
         final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis();
 
-        XYChart<Number, Number> retval = new LineChart<Number, Number>(xAxis, yAxis);
+        XYChart<Number, Number> retval = new LineChart(xAxis, yAxis);
         retval.setPrefWidth(getConfig().getChartWidth());
         retval.setLegendVisible(false);
 
@@ -115,16 +113,9 @@ public class PartitionsChart extends BaseChart {
             }
         });
         
-        /*
+        xAxis.setLabel("radian");
+        yAxis.setLabel("count");
 
-        xAxis.setLowerBound(startRadians.doubleValue());
-        xAxis.setUpperBound(endRadians.doubleValue());
-
-        xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound()) / 10.0);
-
-        yAxis.setLabel(getCountLabel());
-        yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound()) / 5.0);
-*/
         retval.setOnScroll(event -> {
             double zoomFactor = (event.getDeltaY() > 0) ? ZOOM_FACTOR : 1 / ZOOM_FACTOR;
             getZoomHandler().zoom(retval, zoomFactor, event.getSceneX(), event.getSceneY());

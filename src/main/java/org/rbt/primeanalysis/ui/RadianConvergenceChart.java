@@ -18,7 +18,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.layout.FlowPane;
 import javafx.util.StringConverter;
 import org.rbt.primeanalysis.PrimeAnalysis;
 import org.rbt.primeanalysis.PrimePartition;
@@ -71,7 +70,7 @@ public class RadianConvergenceChart extends BaseChart {
         final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis();
 
-        XYChart<Number, Number> retval = new LineChart<Number, Number>(xAxis, yAxis);
+        XYChart<Number, Number> retval = new LineChart(xAxis, yAxis);
         retval.setPrefWidth(getConfig().getChartWidth());
         retval.setLegendVisible(false);
         xAxis.setAutoRanging(false);
@@ -124,7 +123,7 @@ public class RadianConvergenceChart extends BaseChart {
         double upperBound = partitions.get(partitions.size() - 1).getRadian().doubleValue();
         yAxis.setUpperBound(upperBound + (0.01 * upperBound));
         yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound()) / 10.0);
-        xAxis.setLabel("radian");
+        yAxis.setLabel("radian");
         
          retval.setOnScroll(event -> {
             double zoomFactor = (event.getDeltaY() > 0) ? ZOOM_FACTOR : 1 / ZOOM_FACTOR;
