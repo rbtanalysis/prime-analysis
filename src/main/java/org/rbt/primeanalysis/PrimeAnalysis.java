@@ -10,8 +10,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 import javafx.application.Application;
@@ -47,7 +49,6 @@ public class PrimeAnalysis extends Application {
     private Stage stage;
     private TabPane mainTabs = null;
     private List<Long> primes = null;
-    private TreeSet<Integer> primeGapSet = null;
 
     public static void main(String[] args) {
         launch();
@@ -87,7 +88,6 @@ public class PrimeAnalysis extends Application {
 
             if (primes == null) {
                 primes = this.loadPrimes();
-                primeGapSet = loadPrimeGapSet(primes);
             }
 
             Map<BigDecimal, PrimePartition> partitionMap = getPartitions(primes);
@@ -175,8 +175,7 @@ public class PrimeAnalysis extends Application {
                 PrimePartition partition = retval.get(radian);
 
                 if (partition == null) {
-                    Integer diff = Long.valueOf(prime - pp).intValue();
-                    partition = new PrimePartition(this, radian, diff);
+                    partition = new PrimePartition(this, radian);
                 }
 
                 partition.incrementCount();
@@ -203,7 +202,7 @@ public class PrimeAnalysis extends Application {
         System.out.println("**************************************");
         System.out.println("prime count: " + primes.size());
         System.out.println("partition count: " + retval.size());
-        System.out.println("max prime: " + primes.get(primes.size() - 1).longValue());
+        System.out.println("max prime: " + primes.get(primes.size() - 1));
         System.out.println("maxCount: " + maxCount);
         System.out.println("bd scale: " + config.getBigDecimalScale().getScale());
         System.out.println("**************************************");
@@ -223,24 +222,6 @@ public class PrimeAnalysis extends Application {
         } finally {
             pw.close();
         }
-
-    }
-
-    protected TreeSet<Integer> loadPrimeGapSet(List<Long> primes) {
-        TreeSet<Integer> retval = new TreeSet();
-        Long pp = null;
-        for (Long prime : primes) {
-            if (pp != null) {
-                Long diff = prime - pp;
-                retval.add(diff.intValue());
-                config.getSelectedGaps().add(diff.intValue());
-            }
-            pp = prime;
-        }
-
-        System.out.println("found " + retval.size() + " distinct gaps");
-
-        return retval;
 
     }
 
@@ -329,9 +310,6 @@ public class PrimeAnalysis extends Application {
         return stage;
     }
 
-    public TreeSet<Integer> getPrimeGapSet() {
-        return primeGapSet;
-    }
 
     public List<Long> getPrimes() {
         return primes;

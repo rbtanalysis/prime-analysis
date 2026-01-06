@@ -11,14 +11,12 @@ public class PrimePartition implements Serializable, Comparable<PrimePartition> 
     public static final String CSV_HEADER = "radian,count";
     private BigDecimal radian = BigDecimal.ZERO;
     private Long count = 0l;
-    private Integer gap = 0;
     private Integer index;
     private final PrimeAnalysis app;
 
-    public PrimePartition(PrimeAnalysis app, BigDecimal radian, Integer gap) {
+    public PrimePartition(PrimeAnalysis app, BigDecimal radian) {
         this.radian = radian;
         this.app = app;
-        this.gap = gap;
     }
 
     public Double getCount() {
@@ -65,17 +63,11 @@ public class PrimePartition implements Serializable, Comparable<PrimePartition> 
         return radian.hashCode();
     }
 
-    public Integer getGap() {
-        return gap;
-    }
-
     public String getToolTipText() {
         StringBuilder retval = new StringBuilder();
 
         retval.append("radian: ");
         retval.append(getRadian());
-        retval.append("\ngap: ");
-        retval.append(getGap());
         retval.append("\ncount: ");
         retval.append(getCount());
 

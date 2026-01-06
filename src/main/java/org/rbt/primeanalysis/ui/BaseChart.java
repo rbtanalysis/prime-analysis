@@ -45,7 +45,7 @@ public class BaseChart  extends BorderPane {
         this.partitionMap = partitionMap;
     }
  
-        protected void addContextMenu(TabPane tp) {
+    protected void addContextMenu(TabPane tp) {
         final ContextMenu contextMenu = getChartContextMenu(tp);
 
         tp.getSelectionModel().selectFirst();
@@ -56,7 +56,7 @@ public class BaseChart  extends BorderPane {
 
     }
 
-    private ContextMenu getChartContextMenu(TabPane tabPane) {
+    private ContextMenu getChartContextMenu(Node node) {
         MenuItem print = new MenuItem("Print Chart");
         MenuItem exit = new MenuItem("Exit Application");
 
@@ -66,16 +66,16 @@ public class BaseChart  extends BorderPane {
 
             PrinterJob job = PrinterJob.createPrinterJob();
             if (job != null && job.showPrintDialog(app.getStage())) {
-                double scaleX = pageLayout.getPrintableWidth() / tabPane.getBoundsInLocal().getWidth();
-                double scaleY = pageLayout.getPrintableHeight() / tabPane.getBoundsInLocal().getHeight();
+                double scaleX = pageLayout.getPrintableWidth() / node.getBoundsInLocal().getWidth();
+                double scaleY = pageLayout.getPrintableHeight() / node.getBoundsInLocal().getHeight();
                 Transform scale = new Scale(scaleX * app.getConfig().getPrintScaleFactor(), scaleY * app.getConfig().getPrintScaleFactor());
-                tabPane.getTransforms().add(scale);
-                boolean success = job.printPage(tabPane);
+                node.getTransforms().add(scale);
+                boolean success = job.printPage(node);
                 if (success) {
                     job.endJob(); // commit the print job
                 }
 
-                tabPane.getTransforms().remove(scale);
+                node.getTransforms().remove(scale);
             }
         });
 
@@ -94,21 +94,15 @@ public class BaseChart  extends BorderPane {
             }
         });
 
-        // 3. Create a ContextMenu and add MenuItems to it
         ContextMenu retval = new ContextMenu();
         retval.getItems().addAll(print, new SeparatorMenuItem(), exit);
 
         return retval;
     }
 
-    protected boolean isDesiredData(Integer gap) {
-        return app.getConfig().getSelectedGaps().contains(gap);
-    }
-    protected boolean isDesiredData(Double startRadians, Double endRadians, BigDecimal currads, Integer gap) {
-        
-        return ((currads.doubleValue() >= startRadians)
-                && (currads.doubleValue() <= endRadians)
-                && isDesiredData(gap));
+    protected boolean isDesiredData(Double startRadians, Double endRadians, BigDecimal currads) {
+         return ((currads.doubleValue() >= startRadians)
+                && (currads.doubleValue() <= endRadians));
     }
 
     protected FlowPane getChartTitle(String name, Integer numPartitions) {
@@ -119,11 +113,11 @@ public class BaseChart  extends BorderPane {
         StringBuilder s = new StringBuilder();
         s.append(name);
         s.append(": ");
-        s.append("partition count=");
+        s.append("count=");
         s.append(df.format(numPartitions));
-        s.append(" prime count=");
+        s.append(" primes=");
         s.append(df.format(app.getPrimes().size()));
-        s.append(" decimal scale=");
+        s.append(" scale=");
         s.append(app.getConfig().getBigDecimalScale().getScale());
 
         retval.setAlignment(Pos.CENTER);

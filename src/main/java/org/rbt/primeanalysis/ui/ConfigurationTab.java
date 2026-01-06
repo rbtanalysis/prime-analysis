@@ -49,11 +49,6 @@ public class ConfigurationTab extends Tab {
         vbox.getChildren().add(getEntryPane("primeFileCount", "Prime File Count:", newConfig.getPrimeFileLoadCount(), DEFAULT_LABEL_WIDTH));
         vbox.getChildren().add(getEntryPane("bigDecimalScale", "Big Decimal Scale:", newConfig.getBigDecimalScale().getScale(), DEFAULT_LABEL_WIDTH));
 
-        int cnt = 1;
-        for (BoundaryHolder mm : newConfig.getRanges()) {
-            vbox.getChildren().add(getEntryPane(mm, cnt));
-            cnt++;
-        }
 
         vbox.setPadding(new Insets(20, 20, 20, 20));
         vbox.setAlignment(Pos.BASELINE_RIGHT);
@@ -72,26 +67,6 @@ public class ConfigurationTab extends Tab {
             tf = (TextField) entryFieldMap.get("bigDecimalScale");
             newConfig.getBigDecimalScale().setScale(Integer.valueOf(tf.getText()));
 
-            int indx = 1;
-            for (BoundaryHolder mm : newConfig.getRanges()) {
-                tf = (TextField) entryFieldMap.get("range" + indx + "min");
-                mm.setMin(tf.getText());
-
-                tf = (TextField) entryFieldMap.get("range" + indx + "max");
-                mm.setMax(tf.getText());
-                indx++;
-            }
-
-            Set<Integer> selectedGaps = new HashSet();
-
-            for (Node node : gaps.getChildren()) {
-                CheckBox cb = (CheckBox) node;
-                if (cb.isSelected()) {
-                    selectedGaps.add(Integer.valueOf(cb.getText()));
-                }
-            }
-
-            newConfig.setSelectedGaps(selectedGaps);
 
             app.load(newConfig, "Applying configuration updates and reloading...", true);
         });
@@ -103,13 +78,6 @@ public class ConfigurationTab extends Tab {
                     Config config = app.getConfig().clone();
                     ((TextField) entryFieldMap.get("primeFileCount")).setText(config.getPrimeFileLoadCount().toString());
                     ((TextField) entryFieldMap.get("bigDecimalScale")).setText(config.getBigDecimalScale().toString());
-
-                    int cnt = 1;
-                    for (BoundaryHolder mm : newConfig.getRanges()) {
-                        ((TextField) entryFieldMap.get("range" + cnt + "min")).setText(mm.getMin().toString());
-                        ((TextField) entryFieldMap.get("range" + cnt + "max")).setText(mm.getMax().toString());
-                        cnt++;
-                    }
                 }
             }
         });
@@ -119,47 +87,8 @@ public class ConfigurationTab extends Tab {
         buttonPane.setPadding(new Insets(20, 20, 20, 20));
         buttonPane.getChildren().add(b);
 
-        BorderPane gapPane = new BorderPane();
-        gapPane.setPrefSize(200, 300);
-
-        gaps = new VBox();
-
-        for (Integer gap : app.getPrimeGapSet()) {
-            CheckBox cb = new CheckBox(gap.toString());
-            cb.setSelected(app.getPrimeGapSet().contains(gap));
-            gaps.getChildren().add(cb);
-        }
-
-        ScrollPane sp = new ScrollPane(gaps);
-
-        gapPane.setCenter(sp);
-        FlowPane fp = new FlowPane();
-        fp.getChildren().add(b = new Button("Select All"));
-
-        b.setOnAction(e -> {
-            selectAllGaps();
-        });
-        fp.getChildren().add(b = new Button("Clear All"));
-
-        b.setOnAction(e -> {
-            deSelectAllGaps();
-        });
-
-        gapPane.setBottom(fp);
-        HBox hbox = new HBox();
-        hbox.setSpacing(5.0);
-        Label l = new Label("Prime Gaps:");
-        l.setPrefWidth(DEFAULT_LABEL_WIDTH);
-        l.setAlignment(Pos.CENTER_RIGHT);
-
-        hbox.getChildren().add(l);
-        hbox.getChildren().add(gapPane);
-        vbox.getChildren().add(new Label(""));
-        vbox.getChildren().add(hbox);
-
-        BorderPane bp = new BorderPane(vbox);
-        bp.setBottom(buttonPane);
-        setContent(bp);
+ 
+        setContent(vbox);
     }
 
     UnaryOperator<Change> numberFilter = change -> {
@@ -172,20 +101,6 @@ public class ConfigurationTab extends Tab {
             return null; // Reject the change
         }
     };
-
-    private HBox getCheckBoxPane(String name, String label, Boolean selected, Double labelWidth) {
-        HBox retval = new HBox();
-        Label l = new Label("");
-        l.setPrefWidth(labelWidth);
-        retval.getChildren().add(l);
-        CheckBox cb = new CheckBox(label);
-        cb.setSelected(selected);
-        entryFieldMap.put(name, cb);
-
-        retval.getChildren().add(cb);
-        retval.setSpacing(5.0);
-        return retval;
-    }
 
     private HBox getEntryPane(String name, String label, Object curval, Double labelWidth) {
         HBox retval = new HBox();
@@ -203,14 +118,6 @@ public class ConfigurationTab extends Tab {
         return retval;
     }
 
-    private HBox getEntryPane(BoundaryHolder mm, Integer indx) {
-        HBox retval = new HBox();
-
-        retval.getChildren().add(getEntryPane("range" + indx + "min", "Radian range " + indx + " Min:", mm.getMin(), DEFAULT_LABEL_WIDTH));
-        retval.getChildren().add(getEntryPane("range" + indx + "max", "Max:", mm.getMax(), 50.0));
-
-        return retval;
-    }
 
     private boolean isValidDecimalPoint(String in) {
         boolean retval = false;
@@ -222,23 +129,5 @@ public class ConfigurationTab extends Tab {
         return retval;
     }
 
-    private void selectAllGaps() {
-        newConfig.getSelectedGaps().clear();
-        for (Integer gap : app.getPrimeGapSet()) {
-            newConfig.getSelectedGaps().add(gap);
-        }
-
-        for (Node node : gaps.getChildren()) {
-            ((CheckBox) node).setSelected(true);
-        }
-
-    }
-
-    private void deSelectAllGaps() {
-        newConfig.getSelectedGaps().clear();
-        for (Node node : gaps.getChildren()) {
-            ((CheckBox) node).setSelected(false);
-        }
-    }
 
 }

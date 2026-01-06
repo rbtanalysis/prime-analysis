@@ -29,16 +29,4 @@ public class Constants {
 
     // need to reduce chart scale for proper printing
     public static final Double DEFAULT_PRINT_SCALE_FACTOR = 0.8;
-
-    // array of min,max big decimals to define scale for
-    // chart display 
-    public static final String[][] DEFAULT_PARTITION_RANGES = {
-        {"0.2", "0.21"},
-        {"0.0", "0.1"},
-        {"0.0", "0.01"},
-        {"0.0", "0.001"},
-        {"0.0", "0.0001"},
-        {"0.0", "0.00001"}};
-    
- 
 }

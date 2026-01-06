@@ -81,11 +81,9 @@ public class RadianConvergenceChart extends BaseChart {
         XYChart.Series series = getSeries("");
         int cnt = 0;
         for (PrimePartition pp : partitions) {
-            if (isDesiredData(pp.getGap())) {
-                XYChart.Data data = new XYChart.Data(cnt, pp.getRadian().doubleValue());
-                series.getData().add(data);
-                cnt++;
-           }
+            XYChart.Data data = new XYChart.Data(cnt, pp.getRadian().doubleValue());
+            series.getData().add(data);
+            cnt++;
         }
 
         retval.getData().add(series);
