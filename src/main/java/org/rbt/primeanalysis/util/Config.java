@@ -18,7 +18,6 @@ public class Config {
     private Integer primeFileLoadCount = Constants.DEFAULT_PRIME_FILE_LOAD_CNT;
     private BigDecimalScale bigDecimalScale = Constants.DEFAULT_BD_SCALE;
     private Boolean useLogForCounts = Boolean.FALSE;
-    private Boolean useLogForArea = Boolean.FALSE;
     private Set<Integer> selectedGaps = new HashSet();
 
     public String getPrimeFilesDir() {
@@ -81,7 +80,6 @@ public class Config {
         retval.setPrimeFileLoadCount(primeFileLoadCount);
         retval.setRanges(getRanges());
         retval.setUseLogForCounts(useLogForCounts);
-        retval.setUseLogForArea(useLogForArea);
         retval.setSelectedGaps(selectedGaps);
 
          return retval;
@@ -103,14 +101,6 @@ public class Config {
         this.useLogForCounts = useLogForCounts;
     }
 
-    public Boolean isUseLogForArea() {
-        return useLogForArea;
-    }
-
-    public void setUseLogForArea(Boolean useLogForArea) {
-        this.useLogForArea = useLogForArea;
-    }
-
     public Set<Integer> getSelectedGaps() {
         return selectedGaps;
     }
@@ -118,7 +108,4 @@ public class Config {
     public void setSelectedGaps(Set <Integer> selectedGaps) {
         this.selectedGaps = selectedGaps;
     }
-
-    
-    
 }

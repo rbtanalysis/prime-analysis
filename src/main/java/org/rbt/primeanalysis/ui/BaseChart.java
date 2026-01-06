@@ -104,10 +104,10 @@ public class BaseChart  extends BorderPane {
     protected boolean isDesiredData(Integer gap) {
         return app.getConfig().getSelectedGaps().contains(gap);
     }
-    protected boolean isDesiredData(BigDecimal startRadians, BigDecimal endRadians, BigDecimal currads, Integer gap) {
+    protected boolean isDesiredData(Double startRadians, Double endRadians, BigDecimal currads, Integer gap) {
         
-        return ((currads.compareTo(startRadians) > 0)
-                && (currads.compareTo(endRadians) < 0)
+        return ((currads.doubleValue() >= startRadians)
+                && (currads.doubleValue() <= endRadians)
                 && isDesiredData(gap));
     }
 

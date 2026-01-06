@@ -46,7 +46,7 @@ public class PrimeAnalysis extends Application {
     private Util util;
     private Stage stage;
     private TabPane mainTabs = null;
-    private List<BigDecimal> primes = null;
+    private List<Long> primes = null;
     private TreeSet<Integer> primeGapSet = null;
 
     public static void main(String[] args) {
@@ -134,12 +134,6 @@ public class PrimeAnalysis extends Application {
                             l.add(PrimePartition.CSV_HEADER);
                         }
 
-                        if (config.isUseLogForArea()) {
-                            l.add(PrimePartition.CSV_HEADER.replace("Area", "ln(Area)"));
-                        } else {
-                            l.add(PrimePartition.CSV_HEADER);
-                        }
-
                         for (PrimePartition pp : partitions) {
                             l.add(pp.toString());
                         }
@@ -174,37 +168,42 @@ public class PrimeAnalysis extends Application {
         return retval;
     }
 
-    protected Map<BigDecimal, PrimePartition> getPartitions(List<BigDecimal> primes) {
+    protected Map<BigDecimal, PrimePartition> getPartitions(List<Long> primes) {
         Map<BigDecimal, PrimePartition> retval = new HashMap();
-        BigDecimal pp = null;
-        BigDecimal maxCount = BigDecimal.valueOf(Long.MIN_VALUE);
-        for (BigDecimal prime : primes) {
+        Long pp = null;
+        Long maxCount = Long.MIN_VALUE;
+        for (Long prime : primes) {
             if (pp != null) {
-                BigDecimal radians = getRadian(prime, pp);
+                BigDecimal radian = util.toBigDecimal(getGeometricModel(prime.doubleValue(), pp.doubleValue()));
 
-                PrimePartition partition = retval.get(radians);
+                PrimePartition partition = retval.get(radian);
 
                 if (partition == null) {
-                    Integer diff = Long.valueOf(prime.longValue() - pp.longValue()).intValue();
-                    partition = new PrimePartition(this, radians, diff);
+                    Integer diff = Long.valueOf(prime - pp).intValue();
+                    partition = new PrimePartition(this, radian, diff);
                 }
 
                 partition.incrementCount();
 
-                if (maxCount.compareTo(partition.getCount()) < 0) {
-                    maxCount = partition.getCount();
+                if (maxCount < partition.getCount()) {
+                    maxCount = partition.getCount().longValue();
                 }
 
-                retval.put(radians, partition);
+                retval.put(radian, partition);
 
-            } 
-            
-            pp = getUtil().toBigDecimal(prime);
+            }
+
+            pp = prime;
         }
 
         List<PrimePartition> l = new ArrayList(retval.values());
         Collections.sort(l);
         
+        int cnt = 0;
+        for (PrimePartition par : l) {
+            par.setIndex(++cnt);
+        }
+
         System.out.println("**************************************");
         System.out.println("prime count: " + primes.size());
         System.out.println("partition count: " + retval.size());
@@ -231,16 +230,16 @@ public class PrimeAnalysis extends Application {
 
     }
 
-    protected TreeSet<Integer> loadPrimeGapSet(List<BigDecimal> primes) {
+    protected TreeSet<Integer> loadPrimeGapSet(List<Long> primes) {
         TreeSet<Integer> retval = new TreeSet();
         Long pp = null;
-        for (BigDecimal prime : primes) {
+        for (Long prime : primes) {
             if (pp != null) {
-                Long diff = prime.longValue() - pp;
+                Long diff = prime - pp;
                 retval.add(diff.intValue());
                 config.getSelectedGaps().add(diff.intValue());
             }
-            pp = prime.longValue();
+            pp = prime;
         }
 
         System.out.println("found " + retval.size() + " distinct gaps");
@@ -249,8 +248,8 @@ public class PrimeAnalysis extends Application {
 
     }
 
-    protected List<BigDecimal> loadPrimes() {
-        List<BigDecimal> retval = new ArrayList();
+    protected List<Long> loadPrimes() {
+        List<Long> retval = new ArrayList();
         for (int i = 0; i < config.getPrimeFileLoadCount(); ++i) {
             retval.addAll(loadPrimeFile(i + 1));
         }
@@ -258,24 +257,19 @@ public class PrimeAnalysis extends Application {
         return retval;
     }
 
-    private BigDecimal getRadian(BigDecimal prime, BigDecimal pprime) {
-        Double gap = prime.subtract(pprime).doubleValue();
-        BigDecimal divisor = getUtil().toBigDecimal(Math.sqrt(Math.pow(prime.doubleValue(), 2.0) + Math.pow(gap, 2.0)));
-        BigDecimal cos = prime.divide(divisor, getConfig().getBigDecimalScale().getRoundingMode());
-        BigDecimal retval = getUtil().toBigDecimal(Math.acos(cos.doubleValue()));
-        
-        return retval;
+    private Double getGeometricModel(Double prime, Double pprime) {
+        return Math.atan(getUtil().getTorusArea(prime, pprime) / getUtil().getRingArea(prime, pprime)) / (Math.PI * 2.0);
     }
 
-    private List<BigDecimal> loadPrimeFile(int indx) {
-        List<BigDecimal> retval = new ArrayList();
+    private List<Long> loadPrimeFile(int indx) {
+        List<Long> retval = new ArrayList();
         LineNumberReader lnr = null;
         try {
             lnr = new LineNumberReader(new FileReader(config.getPrimeFilesDir() + "primes-" + indx + ".txt"));
             String line;
             while ((line = lnr.readLine()) != null) {
                 if (StringUtils.isNotEmpty(line)) {
-                    retval.add(util.toBigDecimal(line.trim()));
+                    retval.add(Long.valueOf(line.trim()));
                 }
             }
         } catch (Exception ex) {
@@ -343,7 +337,7 @@ public class PrimeAnalysis extends Application {
         return primeGapSet;
     }
 
-    public List<BigDecimal> getPrimes() {
+    public List<Long> getPrimes() {
         return primes;
     }
 }

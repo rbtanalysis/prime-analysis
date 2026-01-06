@@ -68,7 +68,7 @@ public class PartitionsChart extends BaseChart {
         setPadding(new Insets(2, 10, 10, 10));
     }
 
-    private XYChart buildPartitionsChart(Map<BigDecimal, PrimePartition> pmap, BigDecimal startRadians, BigDecimal endRadians) {
+    private XYChart buildPartitionsChart(Map<BigDecimal, PrimePartition> pmap, Double startRadians, Double endRadians) {
         final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis();
 
@@ -79,7 +79,7 @@ public class PartitionsChart extends BaseChart {
         List<PrimePartition> partitions = new ArrayList(pmap.values());
         Collections.sort(partitions);
         for (PrimePartition pp : partitions) {
-            Double crCnt = pp.getCount().doubleValue();
+            Double crCnt = pp.getCount();
             BigDecimal rads = pp.getRadian();
             if (isDesiredData(startRadians, endRadians, rads, pp.getGap())) {
                 XYChart.Series series = getSeries("");
@@ -98,7 +98,7 @@ public class PartitionsChart extends BaseChart {
         }
 
         xAxis.setTickLabelFormatter(new StringConverter<Number>() {
-            DecimalFormat decimalFormat = new DecimalFormat("#0.######");
+            DecimalFormat decimalFormat = new DecimalFormat("#0.############");
 
             @Override
             public String toString(Number object) {
@@ -114,6 +114,11 @@ public class PartitionsChart extends BaseChart {
         });
         
         xAxis.setLabel("radian");
+        xAxis.setAutoRanging(false);
+        xAxis.setLowerBound(partitions.get(0).getRadian().doubleValue());
+        xAxis.setUpperBound(partitions.get(partitions.size() - 1).getRadian().doubleValue());
+        xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound()) / 10.0);
+        
         yAxis.setLabel("count");
 
         retval.setOnScroll(event -> {

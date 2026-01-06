@@ -11,33 +11,42 @@ import java.math.BigDecimal;
  * @author rbtuc
  */
 public class MinMaxHolder {
-    private BigDecimal min = BigDecimal.valueOf(Double.MAX_VALUE);
-    private BigDecimal max = BigDecimal.valueOf(Double.MIN_VALUE);
+    private Double min = Double.valueOf(Double.MAX_VALUE);
+    private Double max = Double.valueOf(Double.MIN_VALUE);
 
     public MinMaxHolder() {
         
     }
     
     public MinMaxHolder(String min, String max) {
-        this.min = new BigDecimal(min);
-        this.max = new BigDecimal(max);
+        this.min = Double.valueOf(min);
+        this.max = Double.valueOf(max);
     }
     
-    public BigDecimal getMin() {
+    public Double getMin() {
         return min;
     }
 
-    public void setMin(BigDecimal min) {
+    public void setMin(Double min) {
         this.min = min;
     }
 
-    public BigDecimal getMax() {
+    public Double getMax() {
         return max;
     }
 
-    public void setMax(BigDecimal max) {
+    public void setMax(Double max) {
         this.max = max;
     }
     
+    
+    public void setMin(String min) {
+        this.min = Double.valueOf(min);
+    }
+
+    public void setMax(String max) {
+        this.max = Double.valueOf(max);
+    }
+
     
 }

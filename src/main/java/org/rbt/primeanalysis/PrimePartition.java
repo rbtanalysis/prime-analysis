@@ -10,23 +10,22 @@ import java.math.BigDecimal;
 public class PrimePartition implements Serializable, Comparable<PrimePartition> {
     public static final String CSV_HEADER = "radian,count";
     private BigDecimal radian = BigDecimal.ZERO;
-    private BigDecimal count = BigDecimal.ZERO;
+    private Long count = 0l;
     private Integer gap = 0;
     private Integer index;
     private final PrimeAnalysis app;
 
     public PrimePartition(PrimeAnalysis app, BigDecimal radian, Integer gap) {
-        this.radian = app.getUtil().toBigDecimal(radian);
+        this.radian = radian;
         this.app = app;
         this.gap = gap;
     }
 
-    public BigDecimal getCount() {
-
+    public Double getCount() {
         if (app.getConfig().isUseLogForCounts()) {
-            return app.getUtil().toBigDecimal(Math.log(count.doubleValue()));
+            return Math.log(count.doubleValue());
         } else {
-            return count;
+            return count.doubleValue();
         }
     }
 
@@ -40,7 +39,7 @@ public class PrimePartition implements Serializable, Comparable<PrimePartition> 
     }
 
     public void incrementCount() {
-        count = count.add(BigDecimal.ONE);
+        count++;
     }
 
     public BigDecimal getRadian() {
@@ -48,7 +47,7 @@ public class PrimePartition implements Serializable, Comparable<PrimePartition> 
     }
 
     public void setRadian(BigDecimal radian) {
-        this.radian = app.getUtil().toBigDecimal(radian);
+        this.radian = radian;
     }
 
     @Override

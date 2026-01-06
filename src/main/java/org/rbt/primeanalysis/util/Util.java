@@ -10,6 +10,7 @@ import org.rbt.primeanalysis.PrimeAnalysis;
  * @author rbtuc
  */
 public class Util {
+
     private final DecimalFormat SCI_FORMAT = new DecimalFormat("0.########E0");
 
     private final PrimeAnalysis app;
@@ -25,24 +26,8 @@ public class Util {
         return new BigDecimal(in).setScale(cfg.getBigDecimalScale().getScale(), cfg.getBigDecimalScale().getRoundingMode());
     }
 
-    public BigDecimal toBigDecimal(Long in) {
-        return toBigDecimal(in.toString());
-    }
-
     public BigDecimal toBigDecimal(Double in) {
         return toBigDecimal(in.toString());
-    }
-
-    public BigDecimal toBigDecimal(BigDecimal in) {
-        return toBigDecimal(in.toString());
-    }
-
-    public BigDecimal twoPi() {
-        return toBigDecimal(Math.PI * 2.0);
-    }
-
-    public BigDecimal piSquared() {
-        return toBigDecimal(Math.pow(Math.PI, 2.0));
     }
 
     public void makeDraggable(Node node) {
@@ -51,7 +36,7 @@ public class Util {
             mouseAnchorX = event.getSceneX() - node.getTranslateX();
             mouseAnchorY = event.getSceneY() - node.getTranslateY();
             if (node.getUserData() == null) {
-                node.setUserData(new Double[] {event.getSceneX(), event.getSceneY()});
+                node.setUserData(new Double[]{event.getSceneX(), event.getSceneY()});
             }
             event.consume();
         });
@@ -63,8 +48,24 @@ public class Util {
             event.consume();
         });
     }
-    
+
     public String toScientific(BigDecimal in) {
         return SCI_FORMAT.format(in);
     }
+
+    public Double getTorusArea(Double prime, Double pprime) {
+        Double gap = prime - pprime;
+        Double r = gap / 2.0;
+        Double R = prime - r;
+ 
+        Double area = 4.0 * Math.pow(Math.PI, 2) * R * r;
+        
+        return area;
+    }
+
+    public Double getRingArea(Double prime, Double pprime) {
+        Double area = Math.PI * (Math.pow(prime, 2.0) - Math.pow(pprime, 2.0));
+        return area;
+    }
+
 }

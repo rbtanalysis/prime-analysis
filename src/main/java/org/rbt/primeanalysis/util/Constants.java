@@ -25,7 +25,7 @@ public class Constants {
 
     // scale and rounding settings for BigDecimal math - pass in desired
     // scale for big decimal precision
-    public static final BigDecimalScale DEFAULT_BD_SCALE = new BigDecimalScale(7);
+    public static final BigDecimalScale DEFAULT_BD_SCALE = new BigDecimalScale(11);
 
     // need to reduce chart scale for proper printing
     public static final Double DEFAULT_PRINT_SCALE_FACTOR = 0.8;
@@ -33,7 +33,7 @@ public class Constants {
     // array of min,max big decimals to define scale for
     // chart display 
     public static final String[][] DEFAULT_PARTITION_RANGES = {
-        {"0.0", "0.4"},
+        {"0.2", "0.21"},
         {"0.0", "0.1"},
         {"0.0", "0.01"},
         {"0.0", "0.001"},

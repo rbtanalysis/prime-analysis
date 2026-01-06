@@ -60,7 +60,6 @@ public class ConfigurationTab extends Tab {
         vbox.setAlignment(Pos.BASELINE_RIGHT);
         vbox.setSpacing(5.0);
 
-        vbox.getChildren().add(getCheckBoxPane("useLogForArea", "Apply ln(area) for area", newConfig.isUseLogForArea(), DEFAULT_LABEL_WIDTH));
         vbox.setPadding(new Insets(20, 20, 20, 20));
         vbox.setAlignment(Pos.BASELINE_RIGHT);
         vbox.setSpacing(5.0);
@@ -77,20 +76,17 @@ public class ConfigurationTab extends Tab {
             int indx = 1;
             for (MinMaxHolder mm : newConfig.getRanges()) {
                 tf = (TextField) entryFieldMap.get("range" + indx + "min");
-                mm.setMin(app.getUtil().toBigDecimal(tf.getText()));
+                mm.setMin(tf.getText());
 
                 tf = (TextField) entryFieldMap.get("range" + indx + "max");
-                mm.setMax(app.getUtil().toBigDecimal(tf.getText()));
+                mm.setMax(tf.getText());
                 indx++;
             }
 
             CheckBox cb = (CheckBox) entryFieldMap.get("useLogForCounts");
             newConfig.setUseLogForCounts(cb.isSelected());
 
-            cb = (CheckBox) entryFieldMap.get("useLogForArea");
-            newConfig.setUseLogForArea(cb.isSelected());
-
-            Set<Integer> selectedGaps = new HashSet();
+             Set<Integer> selectedGaps = new HashSet();
 
             for (Node node : gaps.getChildren()) {
                 cb = (CheckBox) node;
@@ -120,8 +116,7 @@ public class ConfigurationTab extends Tab {
                     }
 
                     ((CheckBox) entryFieldMap.get("useLogForCounts")).setSelected(config.isUseLogForCounts());
-                    ((CheckBox) entryFieldMap.get("useLogForArea")).setSelected(config.isUseLogForArea());
-
+ 
                 }
             }
         });
