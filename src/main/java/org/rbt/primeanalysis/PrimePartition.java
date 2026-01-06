@@ -96,10 +96,15 @@ public class PrimePartition implements Serializable, Comparable<PrimePartition> 
         StringBuilder retval = new StringBuilder();
         String comma = "";
         
+        int cnt = 1;
         for (Integer gap : gaps) {
             retval.append(comma);
             retval.append(gap);
             comma = ",";
+            
+            if (((cnt++) % 10) == 0) {
+                retval.append("\n");
+            }
         }
         
         return retval.toString();

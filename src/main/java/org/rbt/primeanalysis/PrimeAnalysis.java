@@ -99,7 +99,7 @@ public class PrimeAnalysis extends Application {
                 Tab t = new Tab("Partitions");
                 t.setContent(new PartitionsChart(this, partitionMap));
                 mainTabs.getTabs().add(t);
-                t = new Tab("Radian Convergence");
+                t = new Tab("Radian Change");
                 t.setContent(new RadianChangeChart(this, partitionMap));
                 mainTabs.getTabs().add(t);
                 mainTabs.getTabs().add(new Tab("Partition Data"));

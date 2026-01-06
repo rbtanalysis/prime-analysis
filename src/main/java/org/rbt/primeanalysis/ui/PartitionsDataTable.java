@@ -8,7 +8,6 @@ import java.util.Map;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import org.rbt.primeanalysis.PrimeAnalysis;
 import org.rbt.primeanalysis.PrimePartition;
 
 /**
@@ -25,12 +24,14 @@ public class PartitionsDataTable extends TableView {
         TableColumn<PrimePartition, Number> indexCol = new TableColumn("index");
         TableColumn<PrimePartition, BigDecimal> radianCol = new TableColumn("radian");
         TableColumn<PrimePartition, BigDecimal> countCol = new TableColumn("count");
+       TableColumn<PrimePartition, BigDecimal> gapCol = new TableColumn("gaps");
 
-        getColumns().addAll(indexCol, radianCol, countCol);
+        getColumns().addAll(indexCol, radianCol, countCol, gapCol);
 
         indexCol.setCellValueFactory(new PropertyValueFactory<>("index"));
         radianCol.setCellValueFactory(new PropertyValueFactory<>("radian"));
         countCol.setCellValueFactory(new PropertyValueFactory<>("count"));
+        gapCol.setCellValueFactory(new PropertyValueFactory<>("gapList"));
 
         List<PrimePartition> partitions = new ArrayList(partitionMap.values());
         Collections.sort(partitions);
