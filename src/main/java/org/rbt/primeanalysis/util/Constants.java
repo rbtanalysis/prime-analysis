@@ -5,6 +5,7 @@ package org.rbt.primeanalysis.util;
  * @author rbtuc
  */
 public class Constants {
+    public static final Integer DEFAULT_SCALE = 11;
 
     // prime text file location
     public static final String DEFAULT_PRIME_FILES_DIR = "/dev/projects/prime-analysis/src/main/primefiles/";
@@ -25,7 +26,7 @@ public class Constants {
 
     // scale and rounding settings for BigDecimal math - pass in desired
     // scale for big decimal precision
-    public static final BigDecimalScale DEFAULT_BD_SCALE = new BigDecimalScale(10);
+    public static final BigDecimalScale DEFAULT_BD_SCALE = new BigDecimalScale(DEFAULT_SCALE);
 
     // need to reduce chart scale for proper printing
     public static final Double DEFAULT_PRINT_SCALE_FACTOR = 0.8;

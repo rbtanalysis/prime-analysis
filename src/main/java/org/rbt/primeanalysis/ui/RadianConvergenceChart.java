@@ -33,37 +33,14 @@ public class RadianConvergenceChart extends BaseChart {
         super(app, partitionMap);
       //  FlowPane fp = new FlowPane();
         setTop(getChartTitle("Radian Growth", partitionMap.size()));
-        TabPane tp = new TabPane();
-
-        tp.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-        tp.setSide(Side.BOTTOM);
-
-        Tab tab = new Tab();
         XYChart chart = buildRadianConvergenceChart(partitionMap);
         chart.setPrefSize(Constants.DEFAULT_CHART_WIDTH, Constants.DEFAULT_CHART_HEIGHT);
-
-        tab.setContent(chart);
-
         app.getUtil().makeDraggable(chart);
+   //     addContextMenu(tp);
 
-        tp.getTabs().add(tab);
+        setCenter(chart);
 
-        addContextMenu(tp);
-
-        SingleSelectionModel<Tab> selectionModel = tp.getSelectionModel();
-        selectionModel.selectedItemProperty().addListener(new ChangeListener<Tab>() {
-            @Override
-            public void changed(ObservableValue<? extends Tab> obs, Tab oldTab, Tab newTab) {
-                Platform.runLater(() -> {
-                    getZoomHandler().clear((XYChart) oldTab.getContent());
-                    getZoomHandler().clear((XYChart) newTab.getContent());
-                });
-            }
-        });
-
-        setCenter(new ScrollPane(tp));
-
-        setPadding(new Insets(2, 10, 10, 10));
+        setPadding(new Insets(10, 10, 10, 10));
     }
 
     private XYChart buildRadianConvergenceChart(Map<BigDecimal, PrimePartition> pmap) {
@@ -81,9 +58,8 @@ public class RadianConvergenceChart extends BaseChart {
         XYChart.Series series = getSeries("");
         int cnt = 0;
         for (PrimePartition pp : partitions) {
-            XYChart.Data data = new XYChart.Data(cnt, pp.getRadian().doubleValue());
+            XYChart.Data data = new XYChart.Data(++cnt, pp.getRadian().doubleValue());
             series.getData().add(data);
-            cnt++;
         }
 
         retval.getData().add(series);
@@ -96,7 +72,7 @@ public class RadianConvergenceChart extends BaseChart {
         series.getNode().setStyle(getCustomStyle());
 
         xAxis.setTickLabelFormatter(new StringConverter<Number>() {
-            DecimalFormat decimalFormat = new DecimalFormat("#0.######");
+            DecimalFormat decimalFormat = new DecimalFormat("###");
 
             @Override
             public String toString(Number object) {
@@ -111,18 +87,33 @@ public class RadianConvergenceChart extends BaseChart {
             }
         });
 
-    //    xAxis.setLowerBound(0);
-      //  xAxis.setUpperBound(partitions.size());
-        xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound()) / 10.0);
-        xAxis.setLabel("index");
-       
+        xAxis.setLowerBound(0);
+        xAxis.setUpperBound(partitions.size());
+        xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound()) / 5.0);
+        xAxis.setLabel("partition");
+        
         double lowerBound = partitions.get(0).getRadian().doubleValue();
         yAxis.setLowerBound(lowerBound);
         double upperBound = partitions.get(partitions.size() - 1).getRadian().doubleValue();
-        yAxis.setUpperBound(upperBound + (0.01 * upperBound));
+        yAxis.setUpperBound(upperBound);
         yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound()) / 10.0);
         yAxis.setLabel("radian");
         
+        yAxis.setTickLabelFormatter(new StringConverter<Number>() {
+
+            @Override
+            public String toString(Number object) {
+                // Format the number using the DecimalFormat
+                return getRadianFormat().format(object);
+            }
+
+            @Override
+            public Number fromString(String string) {
+                // Not needed for simple display formatting
+                return null;
+            }
+        });
+
          retval.setOnScroll(event -> {
             double zoomFactor = (event.getDeltaY() > 0) ? ZOOM_FACTOR : 1 / ZOOM_FACTOR;
             getZoomHandler().zoom(retval, zoomFactor, event.getSceneX(), event.getSceneY());

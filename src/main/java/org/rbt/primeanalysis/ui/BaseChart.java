@@ -25,6 +25,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Transform;
+import org.apache.commons.lang3.StringUtils;
 import org.rbt.primeanalysis.PrimeAnalysis;
 import org.rbt.primeanalysis.PrimePartition;
 import org.rbt.primeanalysis.util.Config;
@@ -39,10 +40,15 @@ public class BaseChart  extends BorderPane {
     private final PrimeAnalysis app;
     private final Map<BigDecimal, PrimePartition> partitionMap;
     private final ZoomHandler zoomHandler = new ZoomHandler();
+    private DecimalFormat radianFormat;
+    private DecimalFormat countFormat;
     
     public BaseChart(PrimeAnalysis app, Map<BigDecimal, PrimePartition> partitionMap) {
         this.app = app;
         this.partitionMap = partitionMap;
+        radianFormat = new DecimalFormat("#0." + StringUtils.repeat('#', app.getConfig().getBigDecimalScale().getScale()));
+        countFormat = new DecimalFormat("##########0");
+
     }
  
     protected void addContextMenu(TabPane tp) {
@@ -155,4 +161,13 @@ public class BaseChart  extends BorderPane {
         Tooltip tt = new Tooltip(text);
         Tooltip.install(node, tt);
     }
+
+    public DecimalFormat getRadianFormat() {
+        return radianFormat;
+    }
+    
+    public DecimalFormat getCountFormat() {
+        return countFormat;
+    }
+    
  }

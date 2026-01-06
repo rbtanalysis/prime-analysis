@@ -30,7 +30,7 @@ public class PartitionsChart extends BaseChart {
         chart.setPrefSize(Constants.DEFAULT_CHART_WIDTH, Constants.DEFAULT_CHART_HEIGHT);
         app.getUtil().makeDraggable(chart);
         setCenter(new ScrollPane(chart));
-        setPadding(new Insets(2, 10, 10, 10));
+        setPadding(new Insets(10, 10, 10, 10));
     }
 
     private XYChart buildPartitionsChart(Map<BigDecimal, PrimePartition> pmap) {
@@ -61,12 +61,10 @@ public class PartitionsChart extends BaseChart {
         }
 
         xAxis.setTickLabelFormatter(new StringConverter<Number>() {
-            DecimalFormat decimalFormat = new DecimalFormat("#0." + StringUtils.repeat('#', getConfig().getBigDecimalScale().getScale()));
-
             @Override
             public String toString(Number object) {
                 // Format the number using the DecimalFormat
-                return decimalFormat.format(object);
+                return getRadianFormat().format(object);
             }
 
             @Override
@@ -83,6 +81,19 @@ public class PartitionsChart extends BaseChart {
         xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound()) / 10.0);
 
         yAxis.setLabel("count");
+        yAxis.setTickLabelFormatter(new StringConverter<Number>() {
+            @Override
+            public String toString(Number object) {
+                // Format the number using the DecimalFormat
+                return getCountFormat().format(object);
+            }
+
+            @Override
+            public Number fromString(String string) {
+                // Not needed for simple display formatting
+                return null;
+            }
+        });
 
         retval.setOnScroll(event -> {
             double zoomFactor = (event.getDeltaY() > 0) ? ZOOM_FACTOR : 1 / ZOOM_FACTOR;

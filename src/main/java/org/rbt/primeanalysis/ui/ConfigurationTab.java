@@ -86,7 +86,7 @@ public class ConfigurationTab extends Tab {
         buttonPane.setAlignment(Pos.CENTER);
         buttonPane.setPadding(new Insets(20, 20, 20, 20));
         buttonPane.getChildren().add(b);
-
+        vbox.getChildren().add(buttonPane);
  
         setContent(vbox);
     }
