@@ -2,6 +2,8 @@ package org.rbt.primeanalysis;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  *
@@ -13,6 +15,7 @@ public class PrimePartition implements Serializable, Comparable<PrimePartition> 
     private Long count = 0l;
     private Integer index;
     private final PrimeAnalysis app;
+    private Set <Integer> gaps = new TreeSet();
 
     public PrimePartition(PrimeAnalysis app, BigDecimal radian) {
         this.radian = radian;
@@ -70,6 +73,9 @@ public class PrimePartition implements Serializable, Comparable<PrimePartition> 
         retval.append(getRadian());
         retval.append("\ncount: ");
         retval.append(getCount());
+        retval.append("\n");
+        retval.append("gaps: ");
+        retval.append(getGapList());
 
         return retval.toString();
     }
@@ -80,5 +86,22 @@ public class PrimePartition implements Serializable, Comparable<PrimePartition> 
 
     public void setIndex(Integer index) {
         this.index = index;
+    }
+    
+    public void addGap(Integer gap) {
+        gaps.add(gap);
+    }
+    
+    public String getGapList() {
+        StringBuilder retval = new StringBuilder();
+        String comma = "";
+        
+        for (Integer gap : gaps) {
+            retval.append(comma);
+            retval.append(gap);
+            comma = ",";
+        }
+        
+        return retval.toString();
     }
 }

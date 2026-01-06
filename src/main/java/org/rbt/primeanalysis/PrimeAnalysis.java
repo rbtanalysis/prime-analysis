@@ -10,12 +10,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.TreeSet;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -184,7 +181,9 @@ public class PrimeAnalysis extends Application {
                     maxCount = partition.getCount().longValue();
                 }
 
+                partition.addGap((int)(prime - pp));
                 retval.put(radian, partition);
+                
 
             }
 
