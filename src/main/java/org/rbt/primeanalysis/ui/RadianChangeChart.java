@@ -6,18 +6,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
-import javafx.geometry.Side;
-import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SingleSelectionModel;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
 import javafx.util.StringConverter;
 import org.rbt.primeanalysis.PrimeAnalysis;
 import org.rbt.primeanalysis.PrimePartition;
@@ -31,23 +23,22 @@ public class RadianChangeChart extends BaseChart {
 
     public RadianChangeChart(PrimeAnalysis app, Map<BigDecimal, PrimePartition> partitionMap) {
         super(app, partitionMap);
-      //  FlowPane fp = new FlowPane();
-        setTop(getChartTitle("Radian Growth", partitionMap.size()));
-        XYChart chart = buildRadianConvergenceChart(partitionMap);
+        setTop(getChartTitle("Radian Change", partitionMap.size()));
+        XYChart chart = buildRadianChangeChart(partitionMap);
         chart.setPrefSize(Constants.DEFAULT_CHART_WIDTH, Constants.DEFAULT_CHART_HEIGHT);
         app.getUtil().makeDraggable(chart);
-   //     addContextMenu(tp);
+        //     addContextMenu(tp);
 
         setCenter(chart);
 
         setPadding(new Insets(10, 10, 10, 10));
     }
 
-    private XYChart buildRadianConvergenceChart(Map<BigDecimal, PrimePartition> pmap) {
+    private XYChart buildRadianChangeChart(Map<BigDecimal, PrimePartition> pmap) {
         final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis();
 
-        XYChart<Number, Number> retval = new LineChart(xAxis, yAxis);
+        XYChart<Number, Number> retval = new ScatterChart(xAxis, yAxis);
         retval.setPrefWidth(getConfig().getChartWidth());
         retval.setLegendVisible(false);
         xAxis.setAutoRanging(false);
@@ -59,6 +50,7 @@ public class RadianChangeChart extends BaseChart {
         int cnt = 0;
         for (PrimePartition pp : partitions) {
             XYChart.Data data = new XYChart.Data(++cnt, pp.getRadian().doubleValue());
+            data.setExtraValue(pp);
             series.getData().add(data);
         }
 
@@ -66,10 +58,9 @@ public class RadianChangeChart extends BaseChart {
 
         for (Object o : series.getData()) {
             XYChart.Data data = (XYChart.Data) o;
-            setTooltip(data.getNode(), "radian: " + data.getXValue());
+            PrimePartition pp = (PrimePartition)data.getExtraValue();
+            setTooltip(data.getNode(), pp.getToolTipText());
         }
-
-        series.getNode().setStyle(getCustomStyle());
 
         xAxis.setTickLabelFormatter(new StringConverter<Number>() {
             DecimalFormat decimalFormat = new DecimalFormat("###");
@@ -91,14 +82,14 @@ public class RadianChangeChart extends BaseChart {
         xAxis.setUpperBound(partitions.size());
         xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound()) / 5.0);
         xAxis.setLabel("partition");
-        
+
         double lowerBound = partitions.get(0).getRadian().doubleValue();
         yAxis.setLowerBound(lowerBound);
         double upperBound = partitions.get(partitions.size() - 1).getRadian().doubleValue();
         yAxis.setUpperBound(upperBound);
         yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound()) / 10.0);
         yAxis.setLabel("radian");
-        
+
         yAxis.setTickLabelFormatter(new StringConverter<Number>() {
 
             @Override
@@ -114,7 +105,7 @@ public class RadianChangeChart extends BaseChart {
             }
         });
 
-         retval.setOnScroll(event -> {
+        retval.setOnScroll(event -> {
             double zoomFactor = (event.getDeltaY() > 0) ? ZOOM_FACTOR : 1 / ZOOM_FACTOR;
             getZoomHandler().zoom(retval, zoomFactor, event.getSceneX(), event.getSceneY());
             event.consume();
@@ -124,10 +115,4 @@ public class RadianChangeChart extends BaseChart {
         return retval;
     }
 
-    private String getCustomStyle() {
-        StringBuilder retval = new StringBuilder();
-        retval.append("-fx-opacity: 0.5; ");
-        retval.append("-fx-stroke-width: 1.75;");
-        return retval.toString();
-    }
 }

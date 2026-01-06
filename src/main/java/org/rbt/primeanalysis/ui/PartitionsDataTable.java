@@ -15,16 +15,17 @@ import org.rbt.primeanalysis.PrimePartition;
  * @author rbtuc
  */
 public class PartitionsDataTable extends TableView {
-    public PartitionsDataTable (Map<BigDecimal, PrimePartition> partitionMap) {
+
+    public PartitionsDataTable(Map<BigDecimal, PrimePartition> partitionMap) {
         super();
         buildTable(partitionMap);
     }
-    
+
     private void buildTable(Map<BigDecimal, PrimePartition> partitionMap) {
         TableColumn<PrimePartition, Number> indexCol = new TableColumn("index");
         TableColumn<PrimePartition, BigDecimal> radianCol = new TableColumn("radian");
         TableColumn<PrimePartition, BigDecimal> countCol = new TableColumn("count");
-       TableColumn<PrimePartition, BigDecimal> gapCol = new TableColumn("gaps");
+        TableColumn<PrimePartition, BigDecimal> gapCol = new TableColumn("gaps");
 
         getColumns().addAll(indexCol, radianCol, countCol, gapCol);
 

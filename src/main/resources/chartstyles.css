@@ -4,7 +4,7 @@
 }
 
 .chart-line-symbol {
-    -fx-background-color: crimson; 
+    -fx-background-color: crimson;
     -fx-padding: 2;
     -fx-opacity: 0.6;
 }
@@ -19,3 +19,8 @@
     -fx-stroke: gainsboro;
 }
 
+.chart-symbol {
+    -fx-background-color: #4169E1;
+    -fx-background-insets: 0, 2;
+    -fx-padding: 2px;
+}
