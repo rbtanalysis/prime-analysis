@@ -33,7 +33,7 @@ import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
 import org.rbt.primeanalysis.ui.PartitionsDataTable;
 import org.rbt.primeanalysis.ui.PartitionsChart;
-import org.rbt.primeanalysis.ui.RadianConvergenceChart;
+import org.rbt.primeanalysis.ui.RadianChangeChart;
 import org.rbt.primeanalysis.util.Constants;
 import org.rbt.primeanalysis.util.Message;
 import org.rbt.primeanalysis.util.Util;
@@ -103,13 +103,13 @@ public class PrimeAnalysis extends Application {
                 t.setContent(new PartitionsChart(this, partitionMap));
                 mainTabs.getTabs().add(t);
                 t = new Tab("Radian Convergence");
-                t.setContent(new RadianConvergenceChart(this, partitionMap));
+                t.setContent(new RadianChangeChart(this, partitionMap));
                 mainTabs.getTabs().add(t);
                 mainTabs.getTabs().add(new Tab("Partition Data"));
                 mainTabs.getTabs().add(new ConfigurationTab(this));
             }
 
-            BorderPane bp = new BorderPane(new PartitionsDataTable(this, partitionMap));
+            BorderPane bp = new BorderPane(new PartitionsDataTable(partitionMap));
             Button b = new Button("Export to CSV");
 
             b.setOnAction(new EventHandler() {

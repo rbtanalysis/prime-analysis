@@ -1,7 +1,6 @@
 package org.rbt.primeanalysis.ui;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,7 +11,6 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ScrollPane;
 import javafx.util.StringConverter;
-import org.apache.commons.lang3.StringUtils;
 import org.rbt.primeanalysis.PrimeAnalysis;
 import org.rbt.primeanalysis.PrimePartition;
 import org.rbt.primeanalysis.util.Constants;

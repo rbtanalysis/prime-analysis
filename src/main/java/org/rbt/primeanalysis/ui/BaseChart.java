@@ -47,7 +47,7 @@ public class BaseChart  extends BorderPane {
         this.app = app;
         this.partitionMap = partitionMap;
         radianFormat = new DecimalFormat("#0." + StringUtils.repeat('#', app.getConfig().getBigDecimalScale().getScale()));
-        countFormat = new DecimalFormat("##########0");
+        countFormat = new DecimalFormat("##,###,###,##0");
 
     }
  

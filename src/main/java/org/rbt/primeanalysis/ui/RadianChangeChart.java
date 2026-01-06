@@ -27,9 +27,9 @@ import org.rbt.primeanalysis.util.Constants;
  *
  * @author rbtuc
  */
-public class RadianConvergenceChart extends BaseChart {
+public class RadianChangeChart extends BaseChart {
 
-    public RadianConvergenceChart(PrimeAnalysis app, Map<BigDecimal, PrimePartition> partitionMap) {
+    public RadianChangeChart(PrimeAnalysis app, Map<BigDecimal, PrimePartition> partitionMap) {
         super(app, partitionMap);
       //  FlowPane fp = new FlowPane();
         setTop(getChartTitle("Radian Growth", partitionMap.size()));
