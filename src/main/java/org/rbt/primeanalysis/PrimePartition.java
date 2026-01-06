@@ -22,18 +22,14 @@ public class PrimePartition implements Serializable, Comparable<PrimePartition> 
     }
 
     public Double getCount() {
-        if (app.getConfig().isUseLogForCounts()) {
-            return Math.log(count.doubleValue());
-        } else {
-            return count.doubleValue();
-        }
+        return count.doubleValue();
     }
 
     public String toString() {
         StringBuilder retval = new StringBuilder();
         retval.append(radian);
         retval.append(",");
-        retval.append(getCount());
+        retval.append(count);
 
         return retval.toString();
     }

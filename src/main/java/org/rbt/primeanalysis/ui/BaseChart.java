@@ -157,15 +157,6 @@ public class BaseChart  extends BorderPane {
         return zoomHandler;
     }
     
-    
-    protected String getCountLabel() {
-        if (getConfig().isUseLogForCounts()) {
-            return "ln(count)";
-        } else {
-            return "count";
-        }
-    }
-
     protected void setTooltip(Node node, String text) {
         Tooltip tt = new Tooltip(text);
         Tooltip.install(node, tt);

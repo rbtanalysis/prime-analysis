@@ -10,15 +10,15 @@ import java.math.BigDecimal;
  *
  * @author rbtuc
  */
-public class MinMaxHolder {
+public class BoundaryHolder {
     private Double min = Double.valueOf(Double.MAX_VALUE);
     private Double max = Double.valueOf(Double.MIN_VALUE);
 
-    public MinMaxHolder() {
+    public BoundaryHolder() {
         
     }
     
-    public MinMaxHolder(String min, String max) {
+    public BoundaryHolder(String min, String max) {
         this.min = Double.valueOf(min);
         this.max = Double.valueOf(max);
     }

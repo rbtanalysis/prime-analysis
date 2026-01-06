@@ -73,8 +73,8 @@ public class RadianConvergenceChart extends BaseChart {
         XYChart<Number, Number> retval = new LineChart(xAxis, yAxis);
         retval.setPrefWidth(getConfig().getChartWidth());
         retval.setLegendVisible(false);
-      //  xAxis.setAutoRanging(false);
-     //   yAxis.setAutoRanging(false);
+        xAxis.setAutoRanging(false);
+        yAxis.setAutoRanging(false);
 
         List<PrimePartition> partitions = new ArrayList(pmap.values());
         Collections.sort(partitions);

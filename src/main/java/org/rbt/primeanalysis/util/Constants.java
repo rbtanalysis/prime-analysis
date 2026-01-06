@@ -25,7 +25,7 @@ public class Constants {
 
     // scale and rounding settings for BigDecimal math - pass in desired
     // scale for big decimal precision
-    public static final BigDecimalScale DEFAULT_BD_SCALE = new BigDecimalScale(11);
+    public static final BigDecimalScale DEFAULT_BD_SCALE = new BigDecimalScale(10);
 
     // need to reduce chart scale for proper printing
     public static final Double DEFAULT_PRINT_SCALE_FACTOR = 0.8;

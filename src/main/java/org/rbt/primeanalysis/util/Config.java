@@ -10,14 +10,13 @@ import java.util.Set;
  * @author rbtuc
  */
 public class Config {
-    private List<MinMaxHolder> ranges = new ArrayList();
+    private List<BoundaryHolder> ranges = new ArrayList();
     private String primeFilesDir = Constants.DEFAULT_PRIME_FILES_DIR;
     private Double printScaleFactor = Constants.DEFAULT_PRINT_SCALE_FACTOR;
     private Integer chartWidth = Constants.DEFAULT_CHART_WIDTH;
     private Integer chartHeight = Constants.DEFAULT_CHART_HEIGHT;
     private Integer primeFileLoadCount = Constants.DEFAULT_PRIME_FILE_LOAD_CNT;
     private BigDecimalScale bigDecimalScale = Constants.DEFAULT_BD_SCALE;
-    private Boolean useLogForCounts = Boolean.FALSE;
     private Set<Integer> selectedGaps = new HashSet();
 
     public String getPrimeFilesDir() {
@@ -60,16 +59,16 @@ public class Config {
         this.primeFileLoadCount = primeFileLoadCount;
     }
 
-    public List<MinMaxHolder> getRanges() {
+    public List<BoundaryHolder> getRanges() {
         if (ranges.isEmpty()) {
             for (String[] mm : Constants.DEFAULT_PARTITION_RANGES) {
-                ranges.add(new MinMaxHolder(mm[0], mm[1]));
+                ranges.add(new BoundaryHolder(mm[0], mm[1]));
             }
         }
         return ranges;
     }
 
-    public void setRanges(List<MinMaxHolder> radianRanges) {
+    public void setRanges(List<BoundaryHolder> radianRanges) {
         this.ranges = radianRanges;
     }
 
@@ -79,7 +78,6 @@ public class Config {
         retval.setBigDecimalScale(bigDecimalScale);
         retval.setPrimeFileLoadCount(primeFileLoadCount);
         retval.setRanges(getRanges());
-        retval.setUseLogForCounts(useLogForCounts);
         retval.setSelectedGaps(selectedGaps);
 
          return retval;
@@ -91,14 +89,6 @@ public class Config {
 
     public void setBigDecimalScale(BigDecimalScale bigDecimalScale) {
         this.bigDecimalScale = bigDecimalScale;
-    }
-
-    public Boolean isUseLogForCounts() {
-        return useLogForCounts;
-    }
-
-    public void setUseLogForCounts(Boolean useLogForCounts) {
-        this.useLogForCounts = useLogForCounts;
     }
 
     public Set<Integer> getSelectedGaps() {

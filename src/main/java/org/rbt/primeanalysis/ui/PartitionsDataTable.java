@@ -24,17 +24,11 @@ public class PartitionsDataTable extends TableView {
     private void buildTable(PrimeAnalysis app, Map<BigDecimal, PrimePartition> partitionMap) {
         TableColumn<PrimePartition, Number> indexCol = new TableColumn("index");
         TableColumn<PrimePartition, BigDecimal> radianCol = new TableColumn("radian");
-        TableColumn<PrimePartition, BigDecimal> countCol;
-        
-        if (app.getConfig().isUseLogForCounts()) {
-            countCol = new TableColumn("ln(count)");
-        } else {
-            countCol = new TableColumn("count");
-        }
+        TableColumn<PrimePartition, BigDecimal> countCol = new TableColumn("count");
 
         getColumns().addAll(indexCol, radianCol, countCol);
 
-        radianCol.setCellValueFactory(new PropertyValueFactory<>("index"));
+        indexCol.setCellValueFactory(new PropertyValueFactory<>("index"));
         radianCol.setCellValueFactory(new PropertyValueFactory<>("radian"));
         countCol.setCellValueFactory(new PropertyValueFactory<>("count"));
 

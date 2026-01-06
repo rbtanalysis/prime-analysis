@@ -19,10 +19,11 @@ import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.util.StringConverter;
+import org.apache.commons.lang3.StringUtils;
 import org.rbt.primeanalysis.PrimeAnalysis;
 import org.rbt.primeanalysis.PrimePartition;
 import org.rbt.primeanalysis.util.Constants;
-import org.rbt.primeanalysis.util.MinMaxHolder;
+import org.rbt.primeanalysis.util.BoundaryHolder;
 
 /**
  *
@@ -37,7 +38,7 @@ public class PartitionsChart extends BaseChart {
         tp.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         tp.setSide(Side.BOTTOM);
 
-        for (MinMaxHolder range : app.getConfig().getRanges()) {
+        for (BoundaryHolder range : app.getConfig().getRanges()) {
             Tab tab = new Tab();
             tab.setText(range.getMin() + "-" + range.getMax());
             XYChart chart = buildPartitionsChart(partitionMap, range.getMin(), range.getMax());
@@ -98,7 +99,7 @@ public class PartitionsChart extends BaseChart {
         }
 
         xAxis.setTickLabelFormatter(new StringConverter<Number>() {
-            DecimalFormat decimalFormat = new DecimalFormat("#0.############");
+            DecimalFormat decimalFormat = new DecimalFormat("#0." + StringUtils.repeat('#', getConfig().getBigDecimalScale().getScale()));
 
             @Override
             public String toString(Number object) {

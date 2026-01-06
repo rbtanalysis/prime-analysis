@@ -128,12 +128,8 @@ public class PrimeAnalysis extends Application {
                         List<PrimePartition> partitions = new ArrayList(partitionMap.values());
                         Collections.sort(partitions);
                         List<String> l = new ArrayList();
-                        if (config.isUseLogForCounts()) {
-                            l.add(PrimePartition.CSV_HEADER.replace("Count", "ln(Count)"));
-                        } else {
-                            l.add(PrimePartition.CSV_HEADER);
-                        }
-
+                        l.add(PrimePartition.CSV_HEADER);
+ 
                         for (PrimePartition pp : partitions) {
                             l.add(pp.toString());
                         }
@@ -258,7 +254,7 @@ public class PrimeAnalysis extends Application {
     }
 
     private Double getGeometricModel(Double prime, Double pprime) {
-        return Math.atan(getUtil().getTorusArea(prime, pprime) / getUtil().getRingArea(prime, pprime)) / (Math.PI * 2.0);
+        return Math.atan(getUtil().getRingArea(prime, pprime) / getUtil().getTorusArea(prime, pprime)) / (Math.PI * 2.0);
     }
 
     private List<Long> loadPrimeFile(int indx) {

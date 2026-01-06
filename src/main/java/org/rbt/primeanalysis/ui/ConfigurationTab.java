@@ -25,7 +25,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.rbt.primeanalysis.PrimeAnalysis;
 import org.rbt.primeanalysis.util.Config;
-import org.rbt.primeanalysis.util.MinMaxHolder;
+import org.rbt.primeanalysis.util.BoundaryHolder;
 
 /**
  *
@@ -50,12 +50,11 @@ public class ConfigurationTab extends Tab {
         vbox.getChildren().add(getEntryPane("bigDecimalScale", "Big Decimal Scale:", newConfig.getBigDecimalScale().getScale(), DEFAULT_LABEL_WIDTH));
 
         int cnt = 1;
-        for (MinMaxHolder mm : newConfig.getRanges()) {
+        for (BoundaryHolder mm : newConfig.getRanges()) {
             vbox.getChildren().add(getEntryPane(mm, cnt));
             cnt++;
         }
 
-        vbox.getChildren().add(getCheckBoxPane("useLogForCounts", "Apply ln(count) for counts", newConfig.isUseLogForCounts(), DEFAULT_LABEL_WIDTH));
         vbox.setPadding(new Insets(20, 20, 20, 20));
         vbox.setAlignment(Pos.BASELINE_RIGHT);
         vbox.setSpacing(5.0);
@@ -74,7 +73,7 @@ public class ConfigurationTab extends Tab {
             newConfig.getBigDecimalScale().setScale(Integer.valueOf(tf.getText()));
 
             int indx = 1;
-            for (MinMaxHolder mm : newConfig.getRanges()) {
+            for (BoundaryHolder mm : newConfig.getRanges()) {
                 tf = (TextField) entryFieldMap.get("range" + indx + "min");
                 mm.setMin(tf.getText());
 
@@ -83,13 +82,10 @@ public class ConfigurationTab extends Tab {
                 indx++;
             }
 
-            CheckBox cb = (CheckBox) entryFieldMap.get("useLogForCounts");
-            newConfig.setUseLogForCounts(cb.isSelected());
-
-             Set<Integer> selectedGaps = new HashSet();
+            Set<Integer> selectedGaps = new HashSet();
 
             for (Node node : gaps.getChildren()) {
-                cb = (CheckBox) node;
+                CheckBox cb = (CheckBox) node;
                 if (cb.isSelected()) {
                     selectedGaps.add(Integer.valueOf(cb.getText()));
                 }
@@ -109,14 +105,11 @@ public class ConfigurationTab extends Tab {
                     ((TextField) entryFieldMap.get("bigDecimalScale")).setText(config.getBigDecimalScale().toString());
 
                     int cnt = 1;
-                    for (MinMaxHolder mm : newConfig.getRanges()) {
+                    for (BoundaryHolder mm : newConfig.getRanges()) {
                         ((TextField) entryFieldMap.get("range" + cnt + "min")).setText(mm.getMin().toString());
                         ((TextField) entryFieldMap.get("range" + cnt + "max")).setText(mm.getMax().toString());
                         cnt++;
                     }
-
-                    ((CheckBox) entryFieldMap.get("useLogForCounts")).setSelected(config.isUseLogForCounts());
- 
                 }
             }
         });
@@ -138,7 +131,7 @@ public class ConfigurationTab extends Tab {
         }
 
         ScrollPane sp = new ScrollPane(gaps);
- 
+
         gapPane.setCenter(sp);
         FlowPane fp = new FlowPane();
         fp.getChildren().add(b = new Button("Select All"));
@@ -210,7 +203,7 @@ public class ConfigurationTab extends Tab {
         return retval;
     }
 
-    private HBox getEntryPane(MinMaxHolder mm, Integer indx) {
+    private HBox getEntryPane(BoundaryHolder mm, Integer indx) {
         HBox retval = new HBox();
 
         retval.getChildren().add(getEntryPane("range" + indx + "min", "Radian range " + indx + " Min:", mm.getMin(), DEFAULT_LABEL_WIDTH));
