@@ -169,7 +169,7 @@ public class PrimeAnalysis extends Application {
             if (pp != null) {
                 BigDecimal radian = util.toBigDecimal(getGeometricModel(prime.doubleValue(), pp.doubleValue()));
 
-                String key = util.radianToKey(radian);
+                String key = util.radianToPartitionKey(radian);
                 PrimePartition partition = retval.get(key);
 
                 if (partition == null) {

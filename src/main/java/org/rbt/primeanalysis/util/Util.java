@@ -78,12 +78,12 @@ public class Util {
         return area;
     }
 
-    public String radianToKey(BigDecimal radian) {
+    public String radianToPartitionKey(BigDecimal radian) {
         String retval = radian.toString();
         int pos = retval.indexOf('.');
         
         if (pos > -1) {
-            retval = retval.substring(pos);
+            retval = retval.substring(pos + 1);
             int scale = app.getConfig().getBigDecimalScale().getScale();
             if (retval.length() > scale) {
                 retval = retval.substring(0, scale);
