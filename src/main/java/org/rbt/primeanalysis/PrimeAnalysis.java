@@ -235,7 +235,7 @@ public class PrimeAnalysis extends Application {
     }
 
     private Double getGeometricModel(Double prime, Double pprime) {
-        return Math.atan(getUtil().getRingArea(prime, pprime) / getUtil().getTorusArea(prime, pprime));
+        return getUtil().getShellArea(prime, pprime) / (getUtil().getRingArea(prime, pprime) * getUtil().getTorusArea(prime, pprime));
     }
 
     private List<Long> loadPrimeFile(int indx) {

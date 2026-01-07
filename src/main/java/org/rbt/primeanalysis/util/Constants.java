@@ -5,7 +5,7 @@ package org.rbt.primeanalysis.util;
  * @author rbtuc
  */
 public class Constants {
-    public static final Integer DEFAULT_SCALE = 11;
+    public static final Integer DEFAULT_SCALE = 10;
 
     // prime text file location
     public static final String DEFAULT_PRIME_FILES_DIR = "/dev/projects/prime-analysis/src/main/primefiles/";
@@ -30,4 +30,7 @@ public class Constants {
 
     // need to reduce chart scale for proper printing
     public static final Double DEFAULT_PRINT_SCALE_FACTOR = 0.8;
+    
+    public static final Double DEFAULT_LABEL_WIDTH = 150.0;
+
 }

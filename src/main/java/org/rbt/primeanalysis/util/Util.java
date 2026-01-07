@@ -2,7 +2,13 @@ package org.rbt.primeanalysis.util;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.function.UnaryOperator;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
+import javafx.scene.layout.HBox;
 import org.rbt.primeanalysis.PrimeAnalysis;
 
 /**
@@ -57,19 +63,19 @@ public class Util {
         Double gap = prime - pprime;
         Double r = gap / 2.0;
         Double R = prime - r;
- 
+
         Double area = 4.0 * Math.pow(Math.PI, 2) * R * r;
-        
+
         return area;
     }
-    
+
     public Double getTorusVol(Double prime, Double pprime) {
         Double gap = prime - pprime;
         Double r = gap / 2.0;
         Double R = prime - r;
- 
+
         Double vol = 2.0 * Math.pow(Math.PI, 2) * R * Math.pow(r, 2);
-        
+
         return vol;
     }
 
@@ -78,10 +84,16 @@ public class Util {
         return area;
     }
 
+    public Double getShellArea(Double prime, Double pprime) {
+        Double area = ((4.0 / 3.0) * Math.PI) * Math.pow(prime, 3.0) - ((4.0 / 3.0) * Math.PI) * Math.pow(pprime, 3.0);
+        return area;
+    }
+
     public String radianToPartitionKey(BigDecimal radian) {
         String retval = radian.toString();
+
         int pos = retval.indexOf('.');
-        
+
         if (pos > -1) {
             retval = retval.substring(pos + 1);
             int scale = app.getConfig().getBigDecimalScale().getScale();
@@ -89,7 +101,7 @@ public class Util {
                 retval = retval.substring(0, scale);
             }
         }
-        
+
         return retval;
     }
 }
