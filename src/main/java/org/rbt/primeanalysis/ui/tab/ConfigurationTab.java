@@ -1,17 +1,16 @@
-package org.rbt.primeanalysis.ui;
+package org.rbt.primeanalysis.ui.tab;
 
+import org.rbt.primeanalysis.ui.control.IntegerEntryPane;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import org.rbt.primeanalysis.PrimeAnalysis;
 import org.rbt.primeanalysis.util.Config;
-import org.rbt.primeanalysis.util.Constants;
 
 /**
  *

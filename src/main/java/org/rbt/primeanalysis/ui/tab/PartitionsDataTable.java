@@ -1,4 +1,4 @@
-package org.rbt.primeanalysis.ui;
+package org.rbt.primeanalysis.ui.tab;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

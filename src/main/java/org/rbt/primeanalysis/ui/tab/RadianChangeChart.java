@@ -1,15 +1,14 @@
-package org.rbt.primeanalysis.ui;
+package org.rbt.primeanalysis.ui.tab;
 
-import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import javafx.geometry.Insets;
-import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.ScrollPane;
 import javafx.util.StringConverter;
 import org.rbt.primeanalysis.PrimeAnalysis;
 import org.rbt.primeanalysis.PrimePartition;
@@ -19,50 +18,56 @@ import org.rbt.primeanalysis.util.Constants;
  *
  * @author rbtuc
  */
-public class PartitionsChart extends BaseChart {
+public class RadianChangeChart extends BaseChart {
 
-    public PartitionsChart(PrimeAnalysis app, Map<String, PrimePartition> partitionMap) {
+    public RadianChangeChart(PrimeAnalysis app, Map<String, PrimePartition> partitionMap) {
         super(app, partitionMap);
-        setTop(getChartTitle("Prime Partitions", partitionMap.size()));
-        XYChart chart = buildPartitionsChart(partitionMap);
-        chart.setPrefSize(Constants.DEFAULT_CHART_WIDTH, Constants.DEFAULT_CHART_HEIGHT);
+        setTop(getChartTitle("Radian Change", partitionMap.size()));
+        XYChart chart = buildRadianChangeChart(partitionMap);
+        chart.setPrefSize(Constants.DEFAULT_CHART_WIDTH, Constants.DEFAULT_CHART_HEIGHT - 100);
         app.getUtil().makeDraggable(chart);
-        setCenter(new ScrollPane(chart));
+        //     addContextMenu(tp);
+
+        setCenter(chart);
+
         setPadding(new Insets(10, 10, 10, 10));
     }
 
-    private XYChart buildPartitionsChart(Map<String, PrimePartition> pmap) {
+    private XYChart buildRadianChangeChart(Map<String, PrimePartition> pmap) {
         final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis();
 
-        XYChart<Number, Number> retval = new LineChart(xAxis, yAxis);
+        XYChart<Number, Number> retval = new ScatterChart(xAxis, yAxis);
         retval.setPrefWidth(getConfig().getChartWidth());
         retval.setLegendVisible(false);
+        xAxis.setAutoRanging(false);
+        yAxis.setAutoRanging(false);
 
         List<PrimePartition> partitions = new ArrayList(pmap.values());
         Collections.sort(partitions);
+        XYChart.Series series = getSeries("");
+        int cnt = 0;
         for (PrimePartition pp : partitions) {
-            Double crCnt = pp.getCount();
-            BigDecimal rads = pp.getRadian();
-            XYChart.Series series = getSeries("");
+            XYChart.Data data = new XYChart.Data(++cnt, pp.getRadian().doubleValue());
+            data.setExtraValue(pp);
+            series.getData().add(data);
+        }
 
-            series.setName("");
-            XYChart.Data data1 = new XYChart.Data(rads.doubleValue(), 0);
-            series.getData().add(data1);
+        retval.getData().add(series);
 
-            XYChart.Data data2 = new XYChart.Data(rads.doubleValue(), crCnt);
-            series.getData().add(data2);
-            retval.getData().add(series);
-
-            setTooltip(data2.getNode(), pp.getToolTipText());
-            data1.getNode().setStyle("-fx-padding: 0;");
+        for (Object o : series.getData()) {
+            XYChart.Data data = (XYChart.Data) o;
+            PrimePartition pp = (PrimePartition)data.getExtraValue();
+            setTooltip(data.getNode(), pp.getToolTipText());
         }
 
         xAxis.setTickLabelFormatter(new StringConverter<Number>() {
+            DecimalFormat decimalFormat = new DecimalFormat("###");
+
             @Override
             public String toString(Number object) {
                 // Format the number using the DecimalFormat
-                return getRadianFormat().format(object);
+                return decimalFormat.format(object);
             }
 
             @Override
@@ -72,18 +77,22 @@ public class PartitionsChart extends BaseChart {
             }
         });
 
-        xAxis.setLabel("radian");
-        xAxis.setAutoRanging(false);
-        xAxis.setLowerBound(partitions.get(0).getRadian().doubleValue());
-        xAxis.setUpperBound(partitions.get(partitions.size() - 1).getRadian().doubleValue());
-        xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound()) / 10.0);
+        xAxis.setLowerBound(0);
+        xAxis.setUpperBound(partitions.size());
+        xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound()) / 5.0);
+        xAxis.setLabel("partition");
 
-        yAxis.setLabel("count");
+        yAxis.setLowerBound(getConfig().getLowerBound());
+        yAxis.setUpperBound(getConfig().getUpperBound());
+        yAxis.setTickUnit((yAxis.getUpperBound() - yAxis.getLowerBound()) / 10.0);
+        yAxis.setLabel("radian");
+
         yAxis.setTickLabelFormatter(new StringConverter<Number>() {
+
             @Override
             public String toString(Number object) {
                 // Format the number using the DecimalFormat
-                return getCountFormat().format(object);
+                return getRadianFormat().format(object);
             }
 
             @Override
@@ -102,4 +111,5 @@ public class PartitionsChart extends BaseChart {
 
         return retval;
     }
+
 }

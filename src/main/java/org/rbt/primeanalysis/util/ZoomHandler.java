@@ -1,4 +1,4 @@
-package org.rbt.primeanalysis.ui;
+package org.rbt.primeanalysis.util;
 
 import javafx.application.Platform;
 import javafx.geometry.Bounds;

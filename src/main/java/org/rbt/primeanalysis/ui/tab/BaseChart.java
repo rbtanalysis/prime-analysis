@@ -1,4 +1,4 @@
-package org.rbt.primeanalysis.ui;
+package org.rbt.primeanalysis.ui.tab;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -28,6 +28,7 @@ import javafx.scene.transform.Transform;
 import org.apache.commons.lang3.StringUtils;
 import org.rbt.primeanalysis.PrimeAnalysis;
 import org.rbt.primeanalysis.PrimePartition;
+import org.rbt.primeanalysis.util.ZoomHandler;
 import org.rbt.primeanalysis.util.Config;
 import org.rbt.primeanalysis.util.Util;
 

@@ -1,10 +1,10 @@
-package org.rbt.primeanalysis.ui;
+package org.rbt.primeanalysis.ui.control;
 
 /**
  *
  * @author rbtuc
  */
-public class IntegerEntryPane extends EntryPane<Integer> {
+public class IntegerEntryPane extends NumericEntryPane<Integer> {
     public IntegerEntryPane(String label, Integer curval) {
         super(label, curval);
     }
@@ -14,7 +14,7 @@ public class IntegerEntryPane extends EntryPane<Integer> {
     }
 
     @Override
-    protected boolean isValidEntry(String in) {
+    public boolean isValidEntry(String in) {
         return in.matches ("\\d*") || in.trim().startsWith("-");
     }
 }

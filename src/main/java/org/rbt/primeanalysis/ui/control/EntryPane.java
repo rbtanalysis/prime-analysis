@@ -1,4 +1,4 @@
-package org.rbt.primeanalysis.ui;
+package org.rbt.primeanalysis.ui.control;
 
 import java.util.function.UnaryOperator;
 import javafx.geometry.Pos;
@@ -48,13 +48,14 @@ public class EntryPane <k> extends HBox {
         entryField.setPrefColumnCount(10);
         getChildren().add(entryField);
         setSpacing(5.0);
+        setPrefHeight(30.0);
     }
 
-    protected boolean isValidEntry(String in) {
+    public boolean isValidEntry(String in) {
         return true;
     }
     
-    protected boolean isValidDecimalPoint(String in) {
+    public boolean isValidDecimalPoint(String in) {
         boolean retval = false;
         int indx = in.indexOf(".");
         if (indx > 0) {
@@ -72,7 +73,7 @@ public class EntryPane <k> extends HBox {
         return entryName;
     }
     
-    protected Integer toInteger() {
+    public Integer toInteger() {
         if (StringUtils.isNotEmpty(entryField.getText())) {
             return Integer.valueOf(entryField.getText());
         } else {
@@ -80,7 +81,7 @@ public class EntryPane <k> extends HBox {
         }
     }
     
-    protected Double toDouble() {
+    public Double toDouble() {
         if (StringUtils.isNotEmpty(entryField.getText())) {
             return Double.valueOf(entryField.getText());
         } else {

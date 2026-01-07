@@ -1,6 +1,6 @@
 package org.rbt.primeanalysis;
 
-import org.rbt.primeanalysis.ui.ConfigurationTab;
+import org.rbt.primeanalysis.ui.tab.ConfigurationTab;
 import org.rbt.primeanalysis.util.Config;
 import java.io.File;
 import java.io.FileReader;
@@ -28,9 +28,10 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
-import org.rbt.primeanalysis.ui.PartitionsDataTable;
-import org.rbt.primeanalysis.ui.PartitionsChart;
-import org.rbt.primeanalysis.ui.RadianChangeChart;
+import org.rbt.primeanalysis.ui.control.DomainEntry;
+import org.rbt.primeanalysis.ui.tab.PartitionsDataTable;
+import org.rbt.primeanalysis.ui.tab.PartitionsChart;
+import org.rbt.primeanalysis.ui.tab.RadianChangeChart;
 import org.rbt.primeanalysis.util.Constants;
 import org.rbt.primeanalysis.util.Message;
 import org.rbt.primeanalysis.util.Util;
@@ -70,7 +71,7 @@ public class PrimeAnalysis extends Application {
         this.config = config;
 
         if (primes == null) {
-            stage.setScene(getChartScene(new Message(message), Constants.DEFAULT_CHART_WIDTH, Constants.DEFAULT_CHART_HEIGHT));
+            stage.setScene(getChartScene(new Message(message))); //, Constants.DEFAULT_CHART_WIDTH, Constants.DEFAULT_CHART_HEIGHT ));
         } else {
             stage.setScene(getChartScene(new Message(message), stage.getScene().getWidth(), stage.getScene().getHeight()));
         }
@@ -143,7 +144,9 @@ public class PrimeAnalysis extends Application {
 
             mainTabs.getSelectionModel().selectFirst();
 
-            stage.setScene(getChartScene(new BorderPane(mainTabs)));
+            bp = new BorderPane(mainTabs);
+            bp.setBottom(new DomainEntry(this, config.getLowerBound(), config.getUpperBound()));
+            stage.setScene(getChartScene(bp));
             stage.show();
         });
 
@@ -160,6 +163,15 @@ public class PrimeAnalysis extends Application {
         retval.getStylesheets().add(getClass().getResource("/chartstyles.css").toExternalForm());
         return retval;
     }
+    
+    private boolean isDesiredRadian(Double radian) {
+        boolean retval = true;
+        if ((config.getLowerBound() != null) && (config.getUpperBound() != null)) {
+            retval = ((radian >= config.getLowerBound()) && (radian <= config.getUpperBound()));
+        }
+        
+        return retval;
+    }
 
     protected Map<String, PrimePartition> getPartitions(List<Long> primes) {
         Map<String, PrimePartition> retval = new HashMap();
@@ -169,23 +181,23 @@ public class PrimeAnalysis extends Application {
             if (pp != null) {
                 BigDecimal radian = util.toBigDecimal(getGeometricModel(prime.doubleValue(), pp.doubleValue()));
 
-                String key = util.radianToPartitionKey(radian);
-                PrimePartition partition = retval.get(key);
+                if (isDesiredRadian(radian.doubleValue())) {
+                    String key = util.radianToPartitionKey(radian);
+                    PrimePartition partition = retval.get(key);
 
-                if (partition == null) {
-                    partition = new PrimePartition(this, radian);
+                    if (partition == null) {
+                        partition = new PrimePartition(this, radian);
+                    }
+
+                    partition.incrementCount();
+
+                    if (maxCount < partition.getCount()) {
+                        maxCount = partition.getCount().longValue();
+                    }
+
+                    partition.addGap((int)(prime - pp));
+                    retval.put(key, partition);
                 }
-
-                partition.incrementCount();
-
-                if (maxCount < partition.getCount()) {
-                    maxCount = partition.getCount().longValue();
-                }
-
-                partition.addGap((int)(prime - pp));
-                retval.put(key, partition);
-                
-
             }
 
             pp = prime;
@@ -198,14 +210,12 @@ public class PrimeAnalysis extends Application {
         for (PrimePartition par : l) {
             par.setIndex(++cnt);
         }
+        
+        if (config.getLowerBound() == null) {
+            config.setLowerBound(l.get(0).getRadian().doubleValue());
+            config.setUpperBound(l.get(l.size() - 1).getRadian().doubleValue());
+        }
 
-        System.out.println("**************************************");
-        System.out.println("prime count: " + primes.size());
-        System.out.println("partition count: " + retval.size());
-        System.out.println("max prime: " + primes.get(primes.size() - 1));
-        System.out.println("maxCount: " + maxCount);
-        System.out.println("bd scale: " + config.getBigDecimalScale().getScale());
-        System.out.println("**************************************");
 
         return retval;
     }

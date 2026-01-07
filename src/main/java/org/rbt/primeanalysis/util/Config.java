@@ -7,6 +7,8 @@ package org.rbt.primeanalysis.util;
 public class Config {
     private String primeFilesDir = Constants.DEFAULT_PRIME_FILES_DIR;
     private Double printScaleFactor = Constants.DEFAULT_PRINT_SCALE_FACTOR;
+    private Double lowerBound = null;
+    private Double upperBound = null;
     private Integer chartWidth = Constants.DEFAULT_CHART_WIDTH;
     private Integer chartHeight = Constants.DEFAULT_CHART_HEIGHT;
     private Integer primeFileLoadCount = Constants.DEFAULT_PRIME_FILE_LOAD_CNT;
@@ -69,4 +71,22 @@ public class Config {
     public void setBigDecimalScale(BigDecimalScale bigDecimalScale) {
         this.bigDecimalScale = bigDecimalScale;
     }
+
+    public Double getLowerBound() {
+        return lowerBound;
+    }
+
+    public void setLowerBound(Double lowerBound) {
+        this.lowerBound = lowerBound;
+    }
+
+    public Double getUpperBound() {
+        return upperBound;
+    }
+
+    public void setUpperBound(Double upperBound) {
+        this.upperBound = upperBound;
+    }
+
+    
 }
