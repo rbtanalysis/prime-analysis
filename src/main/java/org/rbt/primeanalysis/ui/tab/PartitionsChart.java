@@ -76,8 +76,8 @@ public class PartitionsChart extends BaseChart {
         xAxis.setAutoRanging(false);
         xAxis.setLowerBound(getConfig().getLowerBound());
         xAxis.setUpperBound(getConfig().getUpperBound());
-        xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound()) / 10.0);
-
+        xAxis.setTickUnit((xAxis.getUpperBound() - xAxis.getLowerBound()) / 20.0);
+        xAxis.setTickLabelRotation(70.0);
         yAxis.setLabel("count");
         yAxis.setTickLabelFormatter(new StringConverter<Number>() {
             @Override

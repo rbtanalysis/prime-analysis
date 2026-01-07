@@ -58,7 +58,7 @@ public class EntryPane <k> extends HBox {
     public boolean isValidDecimalPoint(String in) {
         boolean retval = false;
         int indx = in.indexOf(".");
-        if (indx > 0) {
+        if (indx >= 0) {
             retval = (in.indexOf(".", indx + 1) < 0);
         }
 
