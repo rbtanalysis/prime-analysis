@@ -87,7 +87,7 @@ public class PrimeAnalysis extends Application {
                 primes = this.loadPrimes();
             }
 
-            Map<BigDecimal, PrimePartition> partitionMap = getPartitions(primes);
+            Map<String, PrimePartition> partitionMap = getPartitions(primes);
 
             List<Tab> tabs = mainTabs.getTabs();
 
@@ -161,15 +161,16 @@ public class PrimeAnalysis extends Application {
         return retval;
     }
 
-    protected Map<BigDecimal, PrimePartition> getPartitions(List<Long> primes) {
-        Map<BigDecimal, PrimePartition> retval = new HashMap();
+    protected Map<String, PrimePartition> getPartitions(List<Long> primes) {
+        Map<String, PrimePartition> retval = new HashMap();
         Long pp = null;
         Long maxCount = Long.MIN_VALUE;
         for (Long prime : primes) {
             if (pp != null) {
                 BigDecimal radian = util.toBigDecimal(getGeometricModel(prime.doubleValue(), pp.doubleValue()));
 
-                PrimePartition partition = retval.get(radian);
+                String key = util.radianToKey(radian);
+                PrimePartition partition = retval.get(key);
 
                 if (partition == null) {
                     partition = new PrimePartition(this, radian);
@@ -182,7 +183,7 @@ public class PrimeAnalysis extends Application {
                 }
 
                 partition.addGap((int)(prime - pp));
-                retval.put(radian, partition);
+                retval.put(key, partition);
                 
 
             }
@@ -234,7 +235,7 @@ public class PrimeAnalysis extends Application {
     }
 
     private Double getGeometricModel(Double prime, Double pprime) {
-        return Math.atan(getUtil().getRingArea(prime, pprime) / getUtil().getTorusArea(prime, pprime)) / (Math.PI * 2.0);
+        return Math.atan(getUtil().getRingArea(prime, pprime) / getUtil().getTorusArea(prime, pprime));
     }
 
     private List<Long> loadPrimeFile(int indx) {

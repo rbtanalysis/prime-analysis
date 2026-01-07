@@ -1,11 +1,11 @@
 .chart-series-line {
     -fx-stroke: #4169E1;
-    -fx-stroke-width: 1.25;
+    -fx-stroke-width: 0.5;
 }
 
 .chart-line-symbol {
     -fx-background-color: crimson;
-    -fx-padding: 2;
+    -fx-padding: 1.0;
     -fx-opacity: 0.6;
 }
 
@@ -21,6 +21,5 @@
 
 .chart-symbol {
     -fx-background-color: #4169E1;
-    -fx-background-insets: 0, 2;
-    -fx-padding: 2px;
+    -fx-padding: 0.75;
 }

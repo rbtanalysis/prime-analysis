@@ -21,7 +21,7 @@ import org.rbt.primeanalysis.util.Constants;
  */
 public class RadianChangeChart extends BaseChart {
 
-    public RadianChangeChart(PrimeAnalysis app, Map<BigDecimal, PrimePartition> partitionMap) {
+    public RadianChangeChart(PrimeAnalysis app, Map<String, PrimePartition> partitionMap) {
         super(app, partitionMap);
         setTop(getChartTitle("Radian Change", partitionMap.size()));
         XYChart chart = buildRadianChangeChart(partitionMap);
@@ -34,7 +34,7 @@ public class RadianChangeChart extends BaseChart {
         setPadding(new Insets(10, 10, 10, 10));
     }
 
-    private XYChart buildRadianChangeChart(Map<BigDecimal, PrimePartition> pmap) {
+    private XYChart buildRadianChangeChart(Map<String, PrimePartition> pmap) {
         final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis();
 

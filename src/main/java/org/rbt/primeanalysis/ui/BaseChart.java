@@ -38,12 +38,12 @@ import org.rbt.primeanalysis.util.Util;
 public class BaseChart  extends BorderPane {
     protected final double ZOOM_FACTOR = 1.1;
     private final PrimeAnalysis app;
-    private final Map<BigDecimal, PrimePartition> partitionMap;
+    private final Map<String, PrimePartition> partitionMap;
     private final ZoomHandler zoomHandler = new ZoomHandler();
     private DecimalFormat radianFormat;
     private DecimalFormat countFormat;
     
-    public BaseChart(PrimeAnalysis app, Map<BigDecimal, PrimePartition> partitionMap) {
+    public BaseChart(PrimeAnalysis app, Map<String, PrimePartition> partitionMap) {
         this.app = app;
         this.partitionMap = partitionMap;
         radianFormat = new DecimalFormat("#0." + StringUtils.repeat('#', app.getConfig().getBigDecimalScale().getScale()));
@@ -149,7 +149,7 @@ public class BaseChart  extends BorderPane {
         return app;
     }
 
-    public Map<BigDecimal, PrimePartition> getPartitionMap() {
+    public Map<String, PrimePartition> getPartitionMap() {
         return partitionMap;
     }
 

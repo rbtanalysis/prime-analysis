@@ -62,10 +62,34 @@ public class Util {
         
         return area;
     }
+    
+    public Double getTorusVol(Double prime, Double pprime) {
+        Double gap = prime - pprime;
+        Double r = gap / 2.0;
+        Double R = prime - r;
+ 
+        Double vol = 2.0 * Math.pow(Math.PI, 2) * R * Math.pow(r, 2);
+        
+        return vol;
+    }
 
     public Double getRingArea(Double prime, Double pprime) {
         Double area = Math.PI * (Math.pow(prime, 2.0) - Math.pow(pprime, 2.0));
         return area;
     }
 
+    public String radianToKey(BigDecimal radian) {
+        String retval = radian.toString();
+        int pos = retval.indexOf('.');
+        
+        if (pos > -1) {
+            retval = retval.substring(pos);
+            int scale = app.getConfig().getBigDecimalScale().getScale();
+            if (retval.length() > scale) {
+                retval = retval.substring(0, scale);
+            }
+        }
+        
+        return retval;
+    }
 }

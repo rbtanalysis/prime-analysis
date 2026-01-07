@@ -21,7 +21,7 @@ import org.rbt.primeanalysis.util.Constants;
  */
 public class PartitionsChart extends BaseChart {
 
-    public PartitionsChart(PrimeAnalysis app, Map<BigDecimal, PrimePartition> partitionMap) {
+    public PartitionsChart(PrimeAnalysis app, Map<String, PrimePartition> partitionMap) {
         super(app, partitionMap);
         setTop(getChartTitle("Prime Partitions", partitionMap.size()));
         XYChart chart = buildPartitionsChart(partitionMap);
@@ -31,7 +31,7 @@ public class PartitionsChart extends BaseChart {
         setPadding(new Insets(10, 10, 10, 10));
     }
 
-    private XYChart buildPartitionsChart(Map<BigDecimal, PrimePartition> pmap) {
+    private XYChart buildPartitionsChart(Map<String, PrimePartition> pmap) {
         final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis();
 
