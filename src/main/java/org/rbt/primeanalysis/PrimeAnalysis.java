@@ -1,6 +1,5 @@
 package org.rbt.primeanalysis;
 
-import org.rbt.primeanalysis.ui.tab.ConfigurationTab;
 import org.rbt.primeanalysis.util.Config;
 import java.io.File;
 import java.io.FileReader;
@@ -32,7 +31,6 @@ import org.rbt.primeanalysis.ui.control.DomainEntry;
 import org.rbt.primeanalysis.ui.tab.PartitionsDataTable;
 import org.rbt.primeanalysis.ui.tab.PartitionsChart;
 import org.rbt.primeanalysis.ui.tab.RadianChangeChart;
-import org.rbt.primeanalysis.util.Constants;
 import org.rbt.primeanalysis.util.Message;
 import org.rbt.primeanalysis.util.Util;
 
@@ -104,8 +102,7 @@ public class PrimeAnalysis extends Application {
                 t.setContent(new RadianChangeChart(this, partitionMap));
                 mainTabs.getTabs().add(t);
                 mainTabs.getTabs().add(new Tab("Partition Data"));
-                mainTabs.getTabs().add(new ConfigurationTab(this));
-            }
+             }
 
             BorderPane bp = new BorderPane(new PartitionsDataTable(partitionMap));
             Button b = new Button("Export to CSV");
@@ -145,7 +142,10 @@ public class PrimeAnalysis extends Application {
             mainTabs.getSelectionModel().selectFirst();
 
             bp = new BorderPane(mainTabs);
-            bp.setBottom(new DomainEntry(this, config.getLowerBound(), config.getUpperBound()));
+            bp.setBottom(new DomainEntry(this, 
+                config.getLowerBound(), 
+                config.getUpperBound(), 
+                config.getBigDecimalScale().getScale()));
             stage.setScene(getChartScene(bp));
             stage.show();
         });
@@ -179,7 +179,7 @@ public class PrimeAnalysis extends Application {
         Long maxCount = Long.MIN_VALUE;
         for (Long prime : primes) {
             if (pp != null) {
-                BigDecimal radian = util.toBigDecimal(getGeometricModel(prime.doubleValue(), pp.doubleValue()));
+                BigDecimal radian = getGeometricModel(prime.doubleValue(), pp.doubleValue());
 
                 if (isDesiredRadian(radian.doubleValue())) {
                     String key = util.radianToPartitionKey(radian);
@@ -244,9 +244,11 @@ public class PrimeAnalysis extends Application {
         return retval;
     }
 
-    private Double getGeometricModel(Double prime, Double pprime) {
-   //     return getUtil().getShellArea(prime, pprime) / (getUtil().getRingArea(prime, pprime) * getUtil().getTorusArea(prime, pprime));
-        return getUtil().getRingArea(prime, pprime) / getUtil().getTorusArea(prime, pprime);
+    private BigDecimal getGeometricModel(Double prime, Double pprime) {
+   //   getUtil().getShellArea(prime, pprime)
+        BigDecimal a1 = util.toBigDecimal(getUtil().getRingArea(prime, pprime));
+        BigDecimal a2 = util.toBigDecimal(getUtil().getTorusArea(prime, pprime));
+        return a1.divide(a2, config.getBigDecimalScale().getScale(), config.getBigDecimalScale().getRoundingMode());
     }
 
     private List<Long> loadPrimeFile(int indx) {

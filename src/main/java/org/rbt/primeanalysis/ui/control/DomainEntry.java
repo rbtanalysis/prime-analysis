@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import org.rbt.primeanalysis.PrimeAnalysis;
 import org.rbt.primeanalysis.util.Config;
+import org.rbt.primeanalysis.util.Constants;
 
 /**
  *
@@ -15,38 +16,39 @@ public class DomainEntry extends HBox {
 
     private DoubleEntryPane lowerBound;
     private DoubleEntryPane upperBound;
+    private IntegerEntryPane decimalScale;
 
-    public DomainEntry(final PrimeAnalysis app, Double lowerValue, Double upperValue) {
+    public DomainEntry(final PrimeAnalysis app, Double lowerValue, Double upperValue, Integer scale) {
         lowerBound = new DoubleEntryPane("Lower Bound: ", lowerValue);
         upperBound = new DoubleEntryPane("Upper Bound: ", upperValue, 100.0);
+        decimalScale = new IntegerEntryPane("Scale: ", scale, 75.0);
 
         getChildren().add(lowerBound);
         getChildren().add(upperBound);
+        getChildren().add(decimalScale);
 
-        Button b = new Button("Set Bounds and Reload");
+        Button b = new Button("Update Settings and Reload");
 
         b.setOnAction(e -> {
             e.consume();
-            Platform.runLater(() -> {
-                Config newConfig = app.getConfig().clone();
-                newConfig.setLowerBound(lowerBound.toDouble());
-                newConfig.setUpperBound(upperBound.toDouble());
-                app.load(newConfig, "Applying boundry updates and reloading...", true);
-            });
+            Config newConfig = app.getConfig().clone();
+            newConfig.setLowerBound(lowerBound.toDouble());
+            newConfig.setUpperBound(upperBound.toDouble());
+            newConfig.getBigDecimalScale().setScale(decimalScale.toInteger());
+            app.load(newConfig, "Applying updates and reloading...", true);
         });
 
         getChildren().add(b);
 
-        b = new Button("Reset to Default");
+        b = new Button("Reset to Defaults");
 
         b.setOnAction(e -> {
             e.consume();
-            Platform.runLater(() -> {
-                Config newConfig = app.getConfig().clone();
-                newConfig.setLowerBound(null);
-                newConfig.setUpperBound(null);
-                app.load(newConfig, "Applying boundry updates and reloading...", true);
-            });
+            Config newConfig = app.getConfig().clone();
+            newConfig.setLowerBound(null);
+            newConfig.setUpperBound(null);
+            newConfig.getBigDecimalScale().setScale(Constants.DEFAULT_SCALE);
+            app.load(newConfig, "Applying updates and reloading...", true);
         });
 
         getChildren().add(b);
