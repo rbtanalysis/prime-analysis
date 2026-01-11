@@ -1,14 +1,14 @@
 package org.rbt.primeanalysis.util;
 
+import java.io.FileReader;
+import java.io.LineNumberReader;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.function.UnaryOperator;
-import javafx.geometry.Pos;
+import java.util.List;
+import java.util.StringTokenizer;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
-import javafx.scene.layout.HBox;
+import org.apache.commons.lang3.StringUtils;
 import org.rbt.primeanalysis.PrimeAnalysis;
 
 /**
@@ -16,9 +16,6 @@ import org.rbt.primeanalysis.PrimeAnalysis;
  * @author rbtuc
  */
 public class Util {
-
-    private final DecimalFormat SCI_FORMAT = new DecimalFormat("0.########E0");
-
     private final PrimeAnalysis app;
     private double mouseAnchorX;
     private double mouseAnchorY;
@@ -55,53 +52,68 @@ public class Util {
         });
     }
 
-    public String toScientific(BigDecimal in) {
-        return SCI_FORMAT.format(in);
+
+    public BigDecimal getTorusArea(Double prime, Double pprime) {
+        BigDecimal p = toBigDecimal(prime);
+        BigDecimal pp = toBigDecimal(pprime);
+        BigDecimal r = p.subtract(pp).divide(BigDecimal.TWO, app.getScale(), app.getRoundingMode());
+        BigDecimal R = p.subtract(r).setScale(app.getScale(), app.getRoundingMode());
+
+        return toBigDecimal(4.0).multiply(Constants.PI_SQR).multiply(R).multiply(r).setScale(app.getScale(), app.getRoundingMode());
     }
 
-    public Double getTorusArea(Double prime, Double pprime) {
-        Double gap = prime - pprime;
-        Double r = gap / 2.0;
-        Double R = prime - r;
 
-        Double area = 4.0 * Math.pow(Math.PI, 2) * R * r;
+    public void convertPrimeFiles() {
+        PrintWriter pw = null;
+        LineNumberReader lnr = null;
 
-        return area;
-    }
+        for (int i = 30; i < 50; ++i) {
+            try {
+                pw = new PrintWriter(app.getConfig().getPrimeFilesDir() + "primes-" + (i + 1) + ".txt");
+                lnr = new LineNumberReader(new FileReader(app.getConfig().getPrimeFilesDir() + "/primes" + (i + 1) + ".txt"));
+                String line;
+                while ((line = lnr.readLine()) != null) {
+                    if (StringUtils.isNotEmpty(line)) {
+                        if (StringUtils.isNumericSpace(line)) {
+                            StringTokenizer st = new StringTokenizer(line);
 
-    public Double getTorusVol(Double prime, Double pprime) {
-        Double gap = prime - pprime;
-        Double r = gap / 2.0;
-        Double R = prime - r;
+                            while (st.hasMoreTokens()) {
+                                pw.println(st.nextToken());
+                            }
+                        }
+                    }
+                }
 
-        Double vol = 2.0 * Math.pow(Math.PI, 2) * R * Math.pow(r, 2);
-
-        return vol;
-    }
-
-    public Double getRingArea(Double prime, Double pprime) {
-        Double area = Math.PI * (Math.pow(prime, 2.0) - Math.pow(pprime, 2.0));
-        return area;
-    }
-
-    public Double getShellArea(Double prime, Double pprime) {
-        Double area = ((4.0 / 3.0) * Math.PI) * Math.pow(prime, 3.0) - ((4.0 / 3.0) * Math.PI) * Math.pow(pprime, 3.0);
-        return area;
-    }
-
-    public String radianToPartitionKey(BigDecimal radian) {
-        String retval = radian.toString();
-
-        int pos = retval.indexOf('.');
-
-        if (pos > -1) {
-            retval = retval.substring(pos + 1);
-            int scale = app.getConfig().getBigDecimalScale().getScale();
-            if (retval.length() > scale) {
-                retval = retval.substring(0, scale);
+                pw.close();
+                lnr.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            } finally {
+                try {
+                    lnr.close();
+                } catch (Exception ex) {
+                }
+                try {
+                    pw.close();
+                } catch (Exception ex) {
+                }
             }
         }
-
-        return retval;
     }
+
+    public void writeCsv(String name, List<String> lines) {
+        PrintWriter pw = null;
+        try {
+            pw = new PrintWriter(name);
+            for (String line : lines) {
+                pw.println(line);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            pw.close();
+        }
+
+    }
+
 }

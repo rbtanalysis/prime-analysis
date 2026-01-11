@@ -1,11 +1,18 @@
 package org.rbt.primeanalysis.util;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 /**
  *
  * @author rbtuc
  */
 public class Constants {
-    public static final Integer DEFAULT_SCALE = 10;
+    public static final Integer DEFAULT_SCALE = 7;
+    
+    public static final BigDecimal PI = BigDecimal.valueOf(Math.PI).setScale(DEFAULT_SCALE, RoundingMode.HALF_EVEN);
+    public static final BigDecimal TWO_PI = BigDecimal.valueOf(Math.PI * 2.0).setScale(DEFAULT_SCALE, RoundingMode.HALF_EVEN);
+    public static final BigDecimal PI_SQR = BigDecimal.valueOf(Math.PI).pow(2).setScale(DEFAULT_SCALE, RoundingMode.HALF_EVEN);
 
     // prime text file location
     public static final String DEFAULT_PRIME_FILES_DIR = "/dev/projects/prime-analysis/src/main/primefiles/";
@@ -17,7 +24,7 @@ public class Constants {
             + "-fx-border-width: 0; "
             + "-fx-padding: 0; "
             + "-fx-fill: darkred;";
-
+    
     public static final Integer DEFAULT_CHART_WIDTH = 1400;
     public static final Integer DEFAULT_CHART_HEIGHT = 700;
 
@@ -32,5 +39,5 @@ public class Constants {
     public static final Double DEFAULT_PRINT_SCALE_FACTOR = 0.8;
     
     public static final Double DEFAULT_LABEL_WIDTH = 150.0;
-
+    
 }

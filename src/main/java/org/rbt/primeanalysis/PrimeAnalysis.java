@@ -6,12 +6,12 @@ import java.io.FileReader;
 import java.io.LineNumberReader;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -31,6 +31,7 @@ import org.rbt.primeanalysis.ui.control.DomainEntry;
 import org.rbt.primeanalysis.ui.tab.PartitionsDataTable;
 import org.rbt.primeanalysis.ui.tab.PartitionsChart;
 import org.rbt.primeanalysis.ui.tab.RadianChangeChart;
+import org.rbt.primeanalysis.util.Constants;
 import org.rbt.primeanalysis.util.Message;
 import org.rbt.primeanalysis.util.Util;
 
@@ -102,7 +103,7 @@ public class PrimeAnalysis extends Application {
                 t.setContent(new RadianChangeChart(this, partitionMap));
                 mainTabs.getTabs().add(t);
                 mainTabs.getTabs().add(new Tab("Partition Data"));
-             }
+            }
 
             BorderPane bp = new BorderPane(new PartitionsDataTable(partitionMap));
             Button b = new Button("Export to CSV");
@@ -124,12 +125,12 @@ public class PrimeAnalysis extends Application {
                         Collections.sort(partitions);
                         List<String> l = new ArrayList();
                         l.add(PrimePartition.CSV_HEADER);
- 
+
                         for (PrimePartition pp : partitions) {
                             l.add(pp.toString());
                         }
 
-                        writeCsv(f.getPath(), l);
+                        util.writeCsv(f.getPath(), l);
                     }
                 }
             });
@@ -142,10 +143,10 @@ public class PrimeAnalysis extends Application {
             mainTabs.getSelectionModel().selectFirst();
 
             bp = new BorderPane(mainTabs);
-            bp.setBottom(new DomainEntry(this, 
-                config.getLowerBound(), 
-                config.getUpperBound(), 
-                config.getBigDecimalScale().getScale()));
+            bp.setBottom(new DomainEntry(this,
+                    config.getLowerBound(),
+                    config.getUpperBound(),
+                    config.getBigDecimalScale().getScale()));
             stage.setScene(getChartScene(bp));
             stage.show();
         });
@@ -163,13 +164,13 @@ public class PrimeAnalysis extends Application {
         retval.getStylesheets().add(getClass().getResource("/chartstyles.css").toExternalForm());
         return retval;
     }
-    
+
     private boolean isDesiredRadian(Double radian) {
         boolean retval = true;
         if ((config.getLowerBound() != null) && (config.getUpperBound() != null)) {
             retval = ((radian >= config.getLowerBound()) && (radian <= config.getUpperBound()));
         }
-        
+
         return retval;
     }
 
@@ -182,8 +183,7 @@ public class PrimeAnalysis extends Application {
                 BigDecimal radian = getGeometricModel(prime.doubleValue(), pp.doubleValue());
 
                 if (isDesiredRadian(radian.doubleValue())) {
-                    String key = util.radianToPartitionKey(radian);
-                    PrimePartition partition = retval.get(key);
+                    PrimePartition partition = retval.get(radian.toString());
 
                     if (partition == null) {
                         partition = new PrimePartition(this, radian);
@@ -195,8 +195,8 @@ public class PrimeAnalysis extends Application {
                         maxCount = partition.getCount().longValue();
                     }
 
-                    partition.addGap((int)(prime - pp));
-                    retval.put(key, partition);
+                    partition.addGap((int) (prime - pp));
+                    retval.put(radian.toString(), partition);
                 }
             }
 
@@ -205,34 +205,25 @@ public class PrimeAnalysis extends Application {
 
         List<PrimePartition> l = new ArrayList(retval.values());
         Collections.sort(l);
-        
+
         int cnt = 0;
         for (PrimePartition par : l) {
             par.setIndex(++cnt);
         }
-        
+
         if (config.getLowerBound() == null) {
             config.setLowerBound(l.get(0).getRadian().doubleValue());
             config.setUpperBound(l.get(l.size() - 1).getRadian().doubleValue());
         }
-
+        
+        System.out.println("==================================");
+        System.out.println("scale: " + getScale());
+        System.out.println("partitions: " + l.size());
+        System.out.println("primes: " + primes.size());
+        System.out.println("bounds: " + config.getLowerBound() + " to " + config.getUpperBound());
+        System.out.println("==================================");
 
         return retval;
-    }
-
-    private void writeCsv(String name, List<String> lines) {
-        PrintWriter pw = null;
-        try {
-            pw = new PrintWriter(name);
-            for (String line : lines) {
-                pw.println(line);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            pw.close();
-        }
-
     }
 
     protected List<Long> loadPrimes() {
@@ -245,12 +236,17 @@ public class PrimeAnalysis extends Application {
     }
 
     private BigDecimal getGeometricModel(Double prime, Double pprime) {
-   //   getUtil().getShellArea(prime, pprime)
-        BigDecimal a1 = util.toBigDecimal(getUtil().getRingArea(prime, pprime));
-        BigDecimal a2 = util.toBigDecimal(getUtil().getTorusArea(prime, pprime));
-        return a1.divide(a2, config.getBigDecimalScale().getScale(), config.getBigDecimalScale().getRoundingMode());
-    }
+        BigDecimal p = util.toBigDecimal(prime);
+        BigDecimal pp = util.toBigDecimal(pprime);
+        BigDecimal coneArea  = Constants.PI.multiply(p.pow(2).subtract(pp.pow(2)));
+        return arctan(coneArea);
+      }
 
+    private BigDecimal arctan(BigDecimal in) {
+        BigDecimal retval = util.toBigDecimal(Math.atan(in.doubleValue())); 
+        return retval.remainder(Constants.TWO_PI).setScale(getScale(), getRoundingMode());
+    }
+    
     private List<Long> loadPrimeFile(int indx) {
         List<Long> retval = new ArrayList();
         LineNumberReader lnr = null;
@@ -273,44 +269,6 @@ public class PrimeAnalysis extends Application {
         return retval;
     }
 
-    private void convertPrimeFiles() {
-        PrintWriter pw = null;
-        LineNumberReader lnr = null;
-
-        for (int i = 30; i < 50; ++i) {
-            try {
-                pw = new PrintWriter(config.getPrimeFilesDir() + "primes-" + (i + 1) + ".txt");
-                lnr = new LineNumberReader(new FileReader(config.getPrimeFilesDir() + "/primes" + (i + 1) + ".txt"));
-                String line;
-                while ((line = lnr.readLine()) != null) {
-                    if (StringUtils.isNotEmpty(line)) {
-                        if (StringUtils.isNumericSpace(line)) {
-                            StringTokenizer st = new StringTokenizer(line);
-
-                            while (st.hasMoreTokens()) {
-                                pw.println(st.nextToken());
-                            }
-                        }
-                    }
-                }
-
-                pw.close();
-                lnr.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            } finally {
-                try {
-                    lnr.close();
-                } catch (Exception ex) {
-                }
-                try {
-                    pw.close();
-                } catch (Exception ex) {
-                }
-            }
-        }
-    }
-
     public Config getConfig() {
         return config;
     }
@@ -323,8 +281,15 @@ public class PrimeAnalysis extends Application {
         return stage;
     }
 
-
     public List<Long> getPrimes() {
         return primes;
+    }
+
+    public Integer getScale() {
+        return config.getBigDecimalScale().getScale();
+    }
+
+    public RoundingMode getRoundingMode() {
+        return config.getBigDecimalScale().getRoundingMode();
     }
 }
