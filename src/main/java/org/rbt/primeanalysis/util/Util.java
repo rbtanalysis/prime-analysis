@@ -4,7 +4,6 @@ import java.io.FileReader;
 import java.io.LineNumberReader;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.List;
 import java.util.StringTokenizer;
 import javafx.scene.Node;
@@ -57,7 +56,7 @@ public class Util {
         BigDecimal p = toBigDecimal(prime);
         BigDecimal pp = toBigDecimal(pprime);
         BigDecimal r = p.subtract(pp).divide(BigDecimal.TWO, app.getScale(), app.getRoundingMode());
-        BigDecimal R = p.subtract(r).setScale(app.getScale(), app.getRoundingMode());
+        BigDecimal R = p;
 
         return toBigDecimal(4.0).multiply(Constants.PI_SQR).multiply(R).multiply(r).setScale(app.getScale(), app.getRoundingMode());
     }

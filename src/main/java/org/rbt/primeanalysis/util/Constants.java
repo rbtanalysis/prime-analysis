@@ -8,7 +8,7 @@ import java.math.RoundingMode;
  * @author rbtuc
  */
 public class Constants {
-    public static final Integer DEFAULT_SCALE = 7;
+    public static final Integer DEFAULT_SCALE = 9;
     
     public static final BigDecimal PI = BigDecimal.valueOf(Math.PI).setScale(DEFAULT_SCALE, RoundingMode.HALF_EVEN);
     public static final BigDecimal TWO_PI = BigDecimal.valueOf(Math.PI * 2.0).setScale(DEFAULT_SCALE, RoundingMode.HALF_EVEN);

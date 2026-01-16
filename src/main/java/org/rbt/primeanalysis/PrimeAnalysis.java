@@ -177,10 +177,12 @@ public class PrimeAnalysis extends Application {
     protected Map<String, PrimePartition> getPartitions(List<Long> primes) {
         Map<String, PrimePartition> retval = new HashMap();
         Long pp = null;
+        Integer pgap = 1;
         Long maxCount = Long.MIN_VALUE;
         for (Long prime : primes) {
             if (pp != null) {
-                BigDecimal radian = getGeometricModel(prime.doubleValue(), pp.doubleValue());
+                Integer gap = (prime.intValue() - pp.intValue());
+                BigDecimal radian = getGeometricModel(gap.doubleValue(), pgap.doubleValue());
 
                 if (isDesiredRadian(radian.doubleValue())) {
                     PrimePartition partition = retval.get(radian.toString());
@@ -198,10 +200,11 @@ public class PrimeAnalysis extends Application {
                     partition.addGap((int) (prime - pp));
                     retval.put(radian.toString(), partition);
                 }
-            }
+                pgap = gap;
+           }
 
             pp = prime;
-        }
+         }
 
         List<PrimePartition> l = new ArrayList(retval.values());
         Collections.sort(l);
@@ -235,11 +238,12 @@ public class PrimeAnalysis extends Application {
         return retval;
     }
 
-    private BigDecimal getGeometricModel(Double prime, Double pprime) {
-        BigDecimal p = util.toBigDecimal(prime);
-        BigDecimal pp = util.toBigDecimal(pprime);
-        BigDecimal coneArea  = Constants.PI.multiply(p.pow(2).subtract(pp.pow(2)));
-        return arctan(coneArea);
+    private BigDecimal getGeometricModel(Double gap, Double pgap) {
+        BigDecimal g2 = util.toBigDecimal(gap).divide(BigDecimal.TWO, config.getBigDecimalScale().getScale(), config.getBigDecimalScale().getRoundingMode());
+        BigDecimal pg2 = util.toBigDecimal(pgap).divide(BigDecimal.TWO, config.getBigDecimalScale().getScale(), config.getBigDecimalScale().getRoundingMode());
+        BigDecimal rise = g2.subtract(pg2);
+        BigDecimal run = g2.add(pg2);
+        return  arctan(rise.divide(run, config.getBigDecimalScale().getScale(), config.getBigDecimalScale().getRoundingMode()));
       }
 
     private BigDecimal arctan(BigDecimal in) {
